@@ -1,0 +1,78 @@
+{% extends "blog/base.html" %} {% block content %}
+<body>
+  <h1>Profile</h1>
+  <div class="profile-posts">
+    <h3>Your posts</h3>
+    {% for post in posts %}
+    <div class="profile-post">
+      <div class="info">
+        <div class="post-info-date-wrapper">
+          <h3 class="profile-post-title">{{post.title}}</h3>
+          <span class="profile-post-date">{{post.date}}</span>
+        </div>
+      </div>
+      <p class="profile-post-content">{{post.content}}</p>
+      <div class="profile-post-footer">
+        <div class="edit">
+          <a href="{% url 'post-update' post.key %}">
+          <svg
+            class="edit-svg"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <title />
+
+            <g id="Complete">
+              <g id="edit">
+                <g>
+                  <path
+                    d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8"
+                    fill="none"
+                    stroke="#000000"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+
+                  <polygon
+                    fill="none"
+                    points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8"
+                    stroke="#000000"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </g>
+              </g>
+            </g>
+          </svg>
+          </a>
+        </div>
+        <div class="delete">
+          <a href="{% url 'post-delete' post.key %}">
+          <svg
+            class="delete-svg"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
+              stroke="#000000"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+{% endblock content %}
