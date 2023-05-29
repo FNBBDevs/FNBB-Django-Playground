@@ -1,0 +1,162 @@
+{% extends "blog/base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="post-view">
+  <div class="larger-view-container">
+    <div class="post-container">
+      <div class="post-view-top-row">
+        <h4>{{post.title}}</h4>
+        <span class="post-view-time">{{post.date}}</span>
+      </div>
+      <hr />
+      <div class="post-view-middle-row">
+        <p>{{post.content}}</p>
+      </div>
+      <div class="post-view-bottom-row">
+        <span>{{post.author}}</span>
+        <div class="post-view-like-group">
+          {% if post.author != user.username %} {% if liked %}
+          <a href="{% url 'post-like' post.key %}">
+            <svg
+              style="
+                fill: #ffffff;
+                filter: invert(29%) sepia(90%) saturate(5881%)
+                  hue-rotate(350deg) brightness(92%) contrast(91%);
+              "
+              class="post-view-like"
+              width="20px"
+              height="20px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                opacity="0.1"
+                d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
+                fill="#323232"
+              />
+              <path
+                d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
+                stroke="#323232"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+          {% else %}
+          <a href="{% url 'post-like' post.key %}">
+            <svg
+              style="fill: #ffffff"
+              class="post-view-like"
+              width="20px"
+              height="20px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                opacity="0.1"
+                d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
+                fill="#323232"
+              />
+              <path
+                d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
+                stroke="#323232"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+          {% endif %} {% endif %} {% if post.likes == 1 %}
+          <span>{{post.likes}} like</span>
+          {% else %}
+          <span>{{post.likes}} likes</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="comment-container">
+      <div class="add-comment">
+        <form method="POST">
+          {% csrf_token %} {{ form|crispy }}
+          <div class="form-group">
+            <button class="btn btn-outline-success" type="submit">
+              Add Comment
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="current-comments">
+        <h5>Comments</h5>
+        <hr />
+        {% for comment in comments %}
+        <div class="comment">
+          {% if comment.user == user.username %}
+          <button class="btn btn-default" type="button" data-bs-toggle="collapse" data-bs-target="#comment-{{comment.key}}" role="button" aria-expanded="false" aria-controls="comment-{{comment.key}}">
+            <svg
+            class="edit-svg"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <title />
+
+            <g id="Complete">
+              <g id="edit">
+                <g>
+                  <path
+                    d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8"
+                    fill="none"
+                    stroke="#000000"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+
+                  <polygon
+                    fill="none"
+                    points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8"
+                    stroke="#000000"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </g>
+              </g>
+            </g>
+          </svg>
+        </button>
+          {% endif %}
+          <div class="comment-top-row">
+            <div class="badges">
+              {% if comment.user == user.username %}
+              <span class="badge rounded-pill bg-primary">You</span>
+              {% else %}
+              <span class="badge rounded-pill bg-dark">{{comment.user}}</span>
+              {% endif %} {% if post.author == comment.user %}
+              <span class="badge rounded-pill bg-secondary">Author</span>
+              {% endif %}
+            </div>
+            <div class="comment-date-container">
+              <span class="comment-date">{{comment.date}}</span>
+            </div>
+          </div>
+          <hr />
+          <div class="collapse show comment-content" id="comment-{{comment.key}}">
+            <p class="comment-content">"{{comment.comment}}"</p>
+          </div>
+          {% if comment.user == user.username %}
+          <div class="collapse" id="comment-{{comment.key}}">
+            <ul>
+              <li>cock</li>
+              <li>and</li>
+              <li>balls</li>
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -56,20 +56,20 @@ body {
   .bg-steel {
     background-color: var(--main-color);
   }
-  
+
   .site-header .navbar-nav .nav-link {
     color: #ffffff;
     transition: ease all 0.5s;
   }
   
   .site-header .navbar-nav .nav-link:hover {
-    transform: scale(1.1);
+    text-shadow: 1px 1px 2px white, 0 0 1em white, 0 0 0.2em white;
   }
   
   .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
   }
-  
+
   .content-section {
     background: #ffffff;
     padding: 10px 20px;
@@ -327,5 +327,73 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .post-view .larger-view-container .post-container {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 2px solid #3333334c;
+    border-radius: 10px;
+  }
+
+  .post-view .larger-view-container .post-container .post-view-top-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .post-view .larger-view-container .post-container .post-view-time {
+    color: #ffffff;
+    background-color: var(--main-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+  }
+
+  .post-view .larger-view-container .post-container .post-view-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem;
+  }
+
+  .post-view .larger-view-container .post-container .post-view-middle-row {
+    color:#333;
+  }
+
+  .post-view .larger-view-container .comment-container .add-comment {
+    margin-bottom: 1rem;
+  }
+
+  .post-view .larger-view-container .comment-container .current-comments .comment {
+    border: 3px solid #33333368;
+    border-radius: 10px;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 10px 10px #33333396;
+  }
+
+  .post-view .larger-view-container .comment-container .comment-content {
+    color:#333;
+  }
+
+
+  .post-view .larger-view-container .comment-container .current-comments .comment-top-row {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .post-view .larger-view-container .comment-container .current-comments .comment-top-row .comment-date-container {
+    color:#333;
+    font-size: 0.75rem;
+  }
+  
+  .post-view .larger-view-container .comment-container .comment-content {
+    color:#333;
+  }
+  .post-view .larger-view-container .comment-container .comment-top-row .comment-author {
+    color:#333;
   }
 

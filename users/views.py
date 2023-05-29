@@ -18,7 +18,11 @@ def register(request):
     else:
         form = UserRegisterForm()
 
-    return render(request, 'users/register.html', {'form': form})
+    context = {
+        'form': form,
+        'title': 'Register'
+    }
+    return render(request, 'users/register.html', context)
 
 @login_required
 def profile(request):
@@ -26,6 +30,7 @@ def profile(request):
         your_posts = [post for post in Post.objects.all() if post.author==you.username]
         context = {
             'you': you,
-            'posts': your_posts
+            'posts': your_posts,
+            'title': 'Profile'
         }
         return render(request, 'users/profile.html', context)
