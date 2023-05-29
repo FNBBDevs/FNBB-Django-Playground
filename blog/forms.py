@@ -27,5 +27,5 @@ def bounded_update_form(request, key):
 
 def bounded_comment_form(request, key):
     item = get_object_or_404(Comment, key=key)
-    form = UpdatePostForm(instance=item)
+    form = UpdateCommentForm(instance=item)
     return form

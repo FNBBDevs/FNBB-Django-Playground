@@ -278,7 +278,7 @@ body {
     filter: invert(30%) sepia(91%) saturate(1400%) hue-rotate(186deg) brightness(92%) contrast(104%);
   }
 
-  .home .home-post .home-post-footer .delete-svg {
+  .delete-svg {
     filter: invert(18%) sepia(87%) saturate(4345%) hue-rotate(352deg) brightness(93%) contrast(88%);
   }
 
@@ -392,6 +392,12 @@ body {
   
   .post-view .larger-view-container .comment-container .comment-content {
     color:#333;
+  }
+
+  .post-view .larger-view-container .comment-container .current-comments .comment .comment-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .post-view .larger-view-container .comment-container .comment-top-row .comment-author {
     color:#333;

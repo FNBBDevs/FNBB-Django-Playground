@@ -4,8 +4,11 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Post, Like, Comment
-from .forms import CreatePostForm, UpdatePostForm, bounded_update_form, CommentForm, bounded_comment_form
+from .forms import CreatePostForm, UpdatePostForm, bounded_update_form, CommentForm, bounded_comment_form, UpdateCommentForm
 import datetime
+from django.utils import timezone
+import warnings
+warnings.filterwarnings('ignore')
 
 UPDATE_SOURCE = None
 LIKE_SOURCE   = None
@@ -175,29 +178,94 @@ def like(request, key):
 def view_post(request, key):
     post = Post.objects.filter(key=key).values()[0]
     form = CommentForm()
-    current_comments = Comment.objects.order_by('-date').filter(post=key).values()
-    user_comments    = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
-    print(current_comments)
-    print(user_comments)
+    current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
+    user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
+    user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
+    comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
     liked = Like.objects.filter(user=request.user, post=key).values()
     
     context = {
         'post': post,
         'form': form,
-        'comments': current_comments,
-        'liked': True if liked else False
+        'comments': comments_and_forms,
+        'liked': True if liked else False,
     }
     if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            new_comment = form.cleaned_data['comment']
-            comment = Comment(
-                post=key,
-                user=request.user,
-                comment=new_comment,
-                date=datetime.datetime.now()
-            )
-            comment.save()
-        return render(request, 'blog/view_post.html', context=context)
+        if 'UPDATE-comment' in request.POST:
+            form = UpdateCommentForm(request.POST)
+            if form.is_valid():
+                form = form.cleaned_data
+                print(form)
+            else:
+                print(form)
+            post = Post.objects.filter(key=key).values()[0]
+            form = CommentForm()
+            current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
+            user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
+            user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
+            comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
+            liked = Like.objects.filter(user=request.user, post=key).values()
+            
+            context = {
+                'post': post,
+                'form': form,
+                'comments': comments_and_forms,
+                'liked': True if liked else False,
+            }
+            return render(request, 'blog/view_post.html', context=context)
+        else:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                new_comment = form.cleaned_data['comment']
+                comment = Comment(
+                    post=key,
+                    user=request.user,
+                    comment=new_comment,
+                    date=datetime.datetime.now()
+                )
+                comment.save()
+            post = Post.objects.filter(key=key).values()[0]
+            form = CommentForm()
+            current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
+            user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
+            user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
+            comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
+            liked = Like.objects.filter(user=request.user, post=key).values()
+            
+            context = {
+                'post': post,
+                'form': form,
+                'comments': comments_and_forms,
+                'liked': True if liked else False,
+            }
+            return render(request, 'blog/view_post.html', context=context)
     else:
         return render(request, 'blog/view_post.html', context=context)
+
+def update_comment(request, commentkey, postkey):
+    form = UpdateCommentForm(request.POST)
+    if form.is_valid():
+        form = form.cleaned_data
+        new_comment = form['comment']
+        try:
+            comment_to_update = Comment.objects.filter(key=commentkey)
+            if comment_to_update.values()[0]['user'] == str(request.user):
+                comment_to_update.update(comment=new_comment, date=datetime.datetime.now())
+            else:
+                messages.warning(request=request, message="You cannot update a comment that is not yours!")
+        except:
+            messages.warning(request=request, message="That comment does not exist!")
+    else:
+        messages.warning(request=request, message="Could not update comment.")
+    return redirect(reverse('post-view', args=(postkey,)))
+    
+def delete_comment(request, commentkey, postkey):
+    try:
+        comment_to_delete = Comment.objects.filter(key=commentkey)
+        if request.user.username == comment_to_delete.values()[0]['user']:
+            comment_to_delete.delete()
+        else:
+            messages.warning("You cannot delete a comment someone else created!") 
+    except:
+        messages.warning("Unable to delete comment.")
+    return redirect(reverse('post-view', args=(postkey,)))
