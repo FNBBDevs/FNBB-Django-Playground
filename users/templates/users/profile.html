@@ -1,20 +1,82 @@
-{% extends "blog/base.html" %} {% block content %}
-<body>
-  <h1>Profile</h1>
-  <div class="profile-posts">
-    <h3>Your posts</h3>
-    {% for post in posts %}
-    <div class="profile-post">
-      <div class="info">
-        <div class="post-info-date-wrapper">
-          <h3 class="profile-post-title">{{post.title}}</h3>
-          <span class="profile-post-date">{{post.date}}</span>
-        </div>
+{% extends "blog/base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="profile-header">
+  <div class="profile-banner">
+    <div class="profile-image-container">
+      <img
+        class="rounded-circle account-img"
+        src="{{ user.profile.image.url }}"
+      />
+    </div>
+    <div class="profile-content">
+      <span class="username"> {{user.username}} </span>
+      <span class="user-email"> {{user.email}} </span>
+    </div>
+  </div>
+  <div class="collapse update-profile" id="edit-profile">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Update Profile</legend>
+        {{ user_update_form|crispy }} {{ profile_update_form|crispy }}
+      </fieldset>
+      <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Update</button>
       </div>
-      <p class="profile-post-content">{{post.content}}</p>
-      <div class="profile-post-footer">
-        <div class="edit">
-          <a href="{% url 'post-update' post.key %}">
+    </form>
+  </div>
+  <div class="profile-footer">
+    <button class="btn btn-default" type="button" data-bs-toggle="collapse" data-bs-target="#edit-profile" role="button" aria-expanded="false" aria-controls="comment-{{comment.comment.key}}">
+      <svg
+      class="edit-svg"
+      width="20px"
+      height="20px"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title />
+  
+      <g id="Complete">
+        <g id="edit">
+          <g>
+            <path
+              d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8"
+              fill="none"
+              stroke="#000000"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+  
+            <polygon
+              fill="none"
+              points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8"
+              stroke="#000000"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </g>
+        </g>
+      </g>
+    </svg>
+    </button>
+  </div>
+</div>
+
+<div class="profile-posts">
+  <h3>Your posts</h3>
+  {% for post in posts %}
+  <div class="profile-post">
+    <div class="info">
+      <div class="post-info-date-wrapper">
+        <h3 class="profile-post-title">{{post.title}}</h3>
+        <span class="profile-post-date">{{post.date}}</span>
+      </div>
+    </div>
+    <p class="profile-post-content">{{post.content}}</p>
+    <div class="profile-post-footer">
+      <div class="edit">
+        <a href="{% url 'post-update' post.key %}">
           <svg
             class="edit-svg"
             width="18px"
@@ -48,10 +110,10 @@
               </g>
             </g>
           </svg>
-          </a>
-        </div>
-        <div class="delete">
-          <a href="{% url 'post-delete' post.key %}">
+        </a>
+      </div>
+      <div class="delete">
+        <a href="{% url 'post-delete' post.key %}">
           <svg
             class="delete-svg"
             width="20px"
@@ -68,11 +130,10 @@
               stroke-linejoin="round"
             />
           </svg>
-          </a>
-        </div>
+        </a>
       </div>
     </div>
-    {% endfor %}
   </div>
-</body>
+  {% endfor %}
+</div>
 {% endblock content %}

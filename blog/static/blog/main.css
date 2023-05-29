@@ -274,7 +274,7 @@ body {
     filter: invert(18%) sepia(87%) saturate(4345%) hue-rotate(352deg) brightness(93%) contrast(88%);
   }
 
-  .profile-post .edit-svg {
+ .edit-svg {
     filter: invert(30%) sepia(91%) saturate(1400%) hue-rotate(186deg) brightness(92%) contrast(104%);
   }
 
@@ -402,3 +402,30 @@ body {
     color:#333;
   }
 
+  .profile-banner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-header {
+    box-shadow: 10px 10px #33333396;
+    border: 3px solid #33333368;
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .profile-banner .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    color:#333;
+  }
+
+  .profile-header .profile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
