@@ -19,6 +19,8 @@ def home(request):
         posts = list(Post.objects.order_by('-date').all())
         true_likes = [post.key in likes for post in posts]
         posts = [{'post':post, 'liked':like } for post,like in zip(posts, true_likes)]
+        if not posts:
+            messages.add_message(request, messages.INFO, "Looks like there aren't any posts yet.")
         context = {
             'posts': posts,
             'title': 'Home'
@@ -126,8 +128,14 @@ def delete(request, key):
         # get all the likes for this post
         # and remove the likes from the table
         try:
-            post_likes = Like.objects.filter(post=post_to_delete.values()[0]['key'])
+            post_likes = Like.objects.filter(post=key)
             post_likes.delete()
+        except:
+            pass
+
+        try:
+            post_comments = Comment.objects.filter(post=key)
+            post_comments.delete()
         except:
             pass
 
@@ -140,41 +148,35 @@ def delete(request, key):
     
 @login_required
 def like(request, key):
-    global LIKE_SOURCE
-    source = [val for val in str(request.META['HTTP_REFERER']).split('/') if val != '']
-    LIKE_SOURCE = 'LIKE-HOME' if (len(source) == 2 or ('home' in source)) else 'LIKE-COMMENT-VIEW'
-    
-    print(f"[LIKE] incoming like from raw source {source}")
-    print(f"[LIKE] calculated source {LIKE_SOURCE}")
-    
-    # get the post by the key
-    post = Post.objects.filter(key=key)
+    try:
+        post = Post.objects.filter(key=key)
 
-    # check if this user has liked the post
-    # if so delete the like and decrease the
-    # posts likes, else create a new like and
-    # increase the posts likes.
-    if existing_like := Like.objects.filter(user=str(request.user)).filter(post=key):
-        key = existing_like.values()[0]['key']
-        existing_like.delete()
-        post.update(likes=post.values()[0]['likes'] - 1)
-        try:
-            tmp = Like.objects.get(key=key)
-            print("[DELETE] error, like not deleted from database table")
-        except:
-            print("[DELETE] like deleted from the database table")
-    else:
-        new_like = Like(
-            user = str(request.user),
-            post = key
-        )
-        new_like.save()
-        post.update(likes=post.values()[0]['likes'] + 1)
-    if LIKE_SOURCE == 'LIKE-HOME':
+        global LIKE_SOURCE
+        source = [val for val in str(request.META['HTTP_REFERER']).split('/') if val != '']
+        LIKE_SOURCE = 'LIKE-HOME' if (len(source) == 2 or ('home' in source)) else 'LIKE-COMMENT-VIEW'
+        
+        post = Post.objects.filter(key=key)
+
+        if existing_like := Like.objects.filter(user=str(request.user)).filter(post=key):
+            key = existing_like.values()[0]['key']
+            existing_like.delete()
+            post.update(likes=post.values()[0]['likes'] - 1)
+        else:
+            new_like = Like(
+                user = str(request.user),
+                post = key
+            )
+            new_like.save()
+            post.update(likes=post.values()[0]['likes'] + 1)
+        if LIKE_SOURCE == 'LIKE-HOME':
+            return redirect('blog-home')
+        else:
+            return redirect(reverse('post-view', args=(post.values()[0]['key'],)))
+    except:
+        messages.warning(request, "A problem was encountered. Could not like the post.")
         return redirect('blog-home')
-    else:
-        return redirect(reverse('post-view', args=(post.values()[0]['key'],)))
 
+@login_required
 def view_post(request, key):
     post = Post.objects.filter(key=key).values()[0]
     form = CommentForm()
@@ -195,9 +197,6 @@ def view_post(request, key):
             form = UpdateCommentForm(request.POST)
             if form.is_valid():
                 form = form.cleaned_data
-                print(form)
-            else:
-                print(form)
             post = Post.objects.filter(key=key).values()[0]
             form = CommentForm()
             current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
@@ -224,7 +223,9 @@ def view_post(request, key):
                     date=datetime.datetime.now()
                 )
                 comment.save()
-            post = Post.objects.filter(key=key).values()[0]
+            post = Post.objects.filter(key=key)
+            post.update(comments=post.values()[0]['comments'] + 1)
+            post = post.values()[0]
             form = CommentForm()
             current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
             user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
@@ -242,6 +243,7 @@ def view_post(request, key):
     else:
         return render(request, 'blog/view_post.html', context=context)
 
+@login_required
 def update_comment(request, commentkey, postkey):
     form = UpdateCommentForm(request.POST)
     if form.is_valid():
@@ -250,8 +252,9 @@ def update_comment(request, commentkey, postkey):
         try:
             comment_to_update = Comment.objects.filter(key=commentkey)
             if comment_to_update.values()[0]['user'] == str(request.user):
+                same_comment = comment_to_update.values()[0]['comment'] == new_comment
                 comment_to_update.update(comment=new_comment, date=datetime.datetime.now())
-                if comment_to_update.values()[0]['edited'] == 0:
+                if comment_to_update.values()[0]['edited'] == 0 and not same_comment:
                     comment_to_update.update(edited=1)
             else:
                 messages.warning(request=request, message="You cannot update a comment that is not yours!")
@@ -260,7 +263,8 @@ def update_comment(request, commentkey, postkey):
     else:
         messages.warning(request=request, message="Could not update comment.")
     return redirect(reverse('post-view', args=(postkey,)))
-    
+
+@login_required   
 def delete_comment(request, commentkey, postkey):
     try:
         comment_to_delete = Comment.objects.filter(key=commentkey)

@@ -23,9 +23,9 @@
       href="{% static '/blog/main.css' %}"
     />
     {% if title %}
-        <title>etchris Blog - {{ title }}</title>
+    <title>etchris Blog - {{ title }}</title>
     {% else %}
-        <title>etchris Blog</title>
+    <title>etchris Blog</title>
     {% endif %}
   </head>
   <body>
@@ -33,16 +33,38 @@
       <nav class="navbar navbar-expand navbar-dark bg-steel fixed-top">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'blog-home' %}">et-blog</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div id="nav-container" class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            id="nav-container"
+            class="collapse navbar-collapse"
+            id="navbarSupportedContent"
+          >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'blog-home' %}">Home</a>
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="{% url 'blog-home' %}"
+                  >Home</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'blog-about' %}">About</a>
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="{% url 'blog-about' %}"
+                  >About</a
+                >
               </li>
               {% if not user.is_authenticated %}
               <li class="nav-item">
@@ -56,23 +78,25 @@
                 <a class="nav-link" href="{% url 'logout' %}">Logout</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'profile' %}">{{user.username}}</a>
+                <a class="nav-link" href="{% url 'profile' %}"
+                  >{{user.username}}</a
+                >
               </li>
               {% endif %}
             </ul>
           </div>
         </div>
-      </nav>    </header>
+      </nav>
+    </header>
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      {{ message }}
+    </div>
+    {% endfor %} {% endif %}
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-8">
-          {% if messages %} {% for message in messages %}
-          <div class="alert {{ message.tags }} alert-dismissible" role="alert">
-            {{ message }}
-          </div>
-          {% endfor %} {% endif %} 
-          {% block content %}{% endblock %}
-        </div>
+        <div class="col-md-8">{% block content %}{% endblock %}</div>
       </div>
     </main>
 
