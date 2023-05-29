@@ -28,6 +28,7 @@ class Comment(models.Model):
     user    = TextField(default='')
     comment = TextField(default='')
     date    = DateTimeField(default=datetime.datetime.now())
+    edited  = IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user}_commented_on_post_{self.post}"

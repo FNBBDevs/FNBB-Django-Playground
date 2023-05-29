@@ -100,7 +100,12 @@
               {% endif %}
             </div>
             <div class="comment-date-container">
-              last updated <span class="comment-date" style="font-weight: bold;">{{comment.comment.date}}</span>
+              {% if comment.comment.edited == 1%}
+              last updated 
+              {% endif %}
+              <span class="comment-date" style="font-weight: bold;">{{comment.comment.date}}</span> {% if comment.comment.edited == 1%}
+              <span class="badge rounded-pill bg-secondary">edited</span>
+              {% endif %}
             </div>
           </div>
           <hr />

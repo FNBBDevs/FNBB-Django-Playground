@@ -342,8 +342,7 @@ body {
   }
 
   .post-view .larger-view-container .post-container .post-view-time {
-    color: #ffffff;
-    background-color: var(--main-color);
+    color: #333;
     border-radius: 10px;
     display: flex;
     align-items: center;

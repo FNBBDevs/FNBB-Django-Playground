@@ -251,6 +251,8 @@ def update_comment(request, commentkey, postkey):
             comment_to_update = Comment.objects.filter(key=commentkey)
             if comment_to_update.values()[0]['user'] == str(request.user):
                 comment_to_update.update(comment=new_comment, date=datetime.datetime.now())
+                if comment_to_update.values()[0]['edited'] == 0:
+                    comment_to_update.update(edited=1)
             else:
                 messages.warning(request=request, message="You cannot update a comment that is not yours!")
         except:
