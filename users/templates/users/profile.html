@@ -76,7 +76,7 @@
     <p class="profile-post-content">{{post.content}}</p>
     <div class="profile-post-footer">
       <div class="edit">
-        <a href="{% url 'post-update' post.key %}">
+        <a href="{% url 'post-update' post.key %}?next={{ request.path|urlencode }}">
           <svg
             class="edit-svg"
             width="18px"
@@ -113,7 +113,7 @@
         </a>
       </div>
       <div class="delete">
-        <a href="{% url 'post-delete' post.key %}">
+        <a href="{% url 'post-delete' post.key %}?next={{ request.path|urlencode }}">
           <svg
             class="delete-svg"
             width="20px"

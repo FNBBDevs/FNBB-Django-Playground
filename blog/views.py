@@ -1,138 +1,148 @@
+from typing import Optional
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Post, Like, Comment
-from .forms import CreatePostForm, UpdatePostForm, bounded_update_form, CommentForm, bounded_comment_form, UpdateCommentForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
+
 import datetime
-from django.utils import timezone
 import warnings
 warnings.filterwarnings('ignore')
+
+from .models import Post, Like, Comment
+from .forms import CreatePostForm, UpdatePostForm, CommentForm, UpdateCommentForm
 
 UPDATE_SOURCE = None
 LIKE_SOURCE   = None
 
+@login_required
 def home(request):
-    if request.user.is_authenticated:
-        likes = [like.post for like in Like.objects.all() if str(like.user) == str(request.user)]
-        posts = list(Post.objects.order_by('-date').all())
-        true_likes = [post.key in likes for post in posts]
-        posts = [{'post':post, 'liked':like } for post,like in zip(posts, true_likes)]
-        if not posts:
-            messages.add_message(request, messages.INFO, "Looks like there aren't any posts yet.")
-        context = {
-            'posts': posts,
-            'title': 'Home'
-        }
-        return render(request=request, template_name="blog/home.html", context=context)
-    else:
-        return render(request=request, template_name='blog/welcome.html', context={'title': 'Welcome'})
+    """
+    Function to fetch the necessar data and render out the
+    home page.
+    """
+
+    user_likes = [like.post for like in Like.objects.all() if like.user.username == request.user.username]
+
+    posts = Post.objects.order_by('-date').all()
+
+    # a True/False list to indicate whether the user has liked 'this' post
+    true_likes = [post.key in user_likes for post in posts]
+
+    posts = [{'post':post, 'liked':like } for post, like in zip(posts, true_likes)]
+
+    if not posts:
+        messages.add_message(request, messages.INFO, "Looks like there aren't any posts yet.")
+
+    context = {
+        'title': 'Home',
+        'posts': posts
+    }
+
+    return render(request=request, template_name="blog/home.html", context=context)
 
 def about(request):
+    """
+    Function to render out the request page.
+    """
     context = {
         'title': 'About'
     }
     return render(request, 'blog/about.html', context)
 
 def welcome(request):
+    """
+    Function to render out the welcome page for 
+    unauthroized users.
+    """
+    
     if not request.user.is_authenticated:
         return render(request=request, template_name='blog/welcome.html')
     else:
-        likes = [like.post for like in Like.objects.all() if str(like.user) == str(request.user)]
-        posts = list(Post.objects.order_by('-date').all())
-        true_likes = [post.key in likes for post in posts]
-        posts = [{'post':post, 'liked':like } for post,like in zip(posts, true_likes)]
-        context = {
-            'posts': posts,
-            'title': 'Welcome'
-        }
-        return render(request=request, template_name="blog/home.html", context=context)
+        return home(request)
 
 @login_required
 def create_post(request):
+    """
+    Function to render out the create post page, and 
+    handling of the create post form.
+    """
+    
     if request.method == "POST":
         form = CreatePostForm(request.POST)
         if form.is_valid():
-            new_post = Post(
+            Post(
                 author=request.user,
                 title=form.cleaned_data['title'],
                 content=form.cleaned_data['content'],
                 date=datetime.datetime.now()
-            )
-            new_post.save()
+            ).save()
             return redirect('blog-home')
     else:
         form = CreatePostForm()
         context = {
+            'title': 'Create Post',
             'form': form,
-            'title': 'Create Post'
         }
-        return render(request, 'blog/create.html', context)
+        return render(request, 'blog/create_post.html', context)
 
 @login_required
-def update(request, key):
-    global UPDATE_SOURCE
-    source = 'UPDATE-HOME' if 'home' in str(request.META['HTTP_REFERER']) else 'UPDATE-PROFILE'
-    if not UPDATE_SOURCE:
-        UPDATE_SOURCE = source
-    print(f"[UPDATE] SOURCE of value: {UPDATE_SOURCE}")
+def update_post(request, key):
+    next = request.POST.get('next', '/')
     if request.method == "POST":
         form = UpdatePostForm(request.POST)
         if form.is_valid():
-            form = form.cleaned_data
-            new_title = form['title']
-            new_content = form['content']
-            old_post = Post.objects.filter(key=key)
-            if new_title != '':
-                old_post.update(title=new_title)
-            if new_content != '':
-                old_post.update(content=new_content)
-
-            if UPDATE_SOURCE == 'UPDATE-HOME':
-                UPDATE_SOURCE = None
-                return redirect('blog-home')
-            else:
-                UPDATE_SOURCE = None
-                return redirect('profile')
+            try:
+                Post.objects.filter(key=key).update(
+                    title=form.cleaned_data['title'],
+                    content=form.cleaned_data['content']
+                )
+            except Exception as exception:
+                messages.warning(request, f'A problem was encountered. Could not update post: {exception}')
+                return redirect(next)
     else:
-        post_to_edit = Post.objects.filter(key=key).values()[0]
-        request_user = str(request.user)
-        post_user    = str(post_to_edit['author'])
-        if post_user == request_user:
-
-            form = bounded_update_form(request=request, key=key)
+        post_to_edit = Post.objects.filter(key=key).first()
+        if request.user.username == post_to_edit.author.username:
+            form = UpdatePostForm(instance=post_to_edit)
             context = {
                 'form': form,
                 'key': key,
                 'title': 'Update Post'
             }
-            return render(request, 'blog/update.html', context)
-        else:
-            if UPDATE_SOURCE == 'UPDATE-HOME':
-                return redirect('blog-home')
-            else:
-                return redirect('profile')
+            return render(request, 'blog/update_post.html', context)
+    return redirect(next)
 
 @login_required
-def delete(request, key):
-    source = str(request.META['HTTP_REFERER'])
+def delete_post(request, key):
+    try:
+        next = '/home/' if '/home' in request.META.get('HTTP_REFERER', '/') else '/profile/'
+    except:
+        next = '/profile/'
 
-    post_to_delete = Post.objects.order_by('-date').filter(key=key)
+    try:
+        post_to_delete = Post.objects.order_by('-date').filter(key=key).first()
+    except:
+        messages.warning(request, "A problem was encountered. Post not deleted.")
+        return redirect(next)
 
-    request_user = str(request.user)
-    post_user = str(post_to_delete.values()[0]['author'])
+    if post_to_delete.author.username == request.user.username:
 
-    if post_user == request_user:
-
-        # get all the likes for this post
-        # and remove the likes from the table
+        # delete associated likes
         try:
             post_likes = Like.objects.filter(post=key)
             post_likes.delete()
         except:
             pass
-
+        
+        # deleted associated comments
         try:
             post_comments = Comment.objects.filter(post=key)
             post_comments.delete()
@@ -141,107 +151,76 @@ def delete(request, key):
 
         post_to_delete.delete()
     
-    if 'home' in source:
-        return redirect('blog-home')
-    else:
-        return redirect('profile')
+    return redirect(next)
     
 @login_required
-def like(request, key):
+def like_post(request, key):
+
+    try:
+        next = redirect(reverse('post-view', args=(key,))) if '/view' in request.META.get('HTTP_REFERER', '/') else redirect('/home/')
+    except:
+        next = redirect('/home/')
+
     try:
         post = Post.objects.filter(key=key)
-
-        global LIKE_SOURCE
-        source = [val for val in str(request.META['HTTP_REFERER']).split('/') if val != '']
-        LIKE_SOURCE = 'LIKE-HOME' if (len(source) == 2 or ('home' in source)) else 'LIKE-COMMENT-VIEW'
-        
-        post = Post.objects.filter(key=key)
-
-        if existing_like := Like.objects.filter(user=str(request.user)).filter(post=key):
-            key = existing_like.values()[0]['key']
+    except:
+        messages.warning(request, "A problem was encountered. Could not like post.")
+        return redirect(next)
+    
+    try:
+        if existing_like := Like.objects.filter(user=request.user).filter(post=key).first():
+            key = existing_like.key
             existing_like.delete()
-            post.update(likes=post.values()[0]['likes'] - 1)
+            post.update(likes=post.first().likes - 1)
         else:
             new_like = Like(
-                user = str(request.user),
+                user = request.user,
                 post = key
             )
             new_like.save()
-            post.update(likes=post.values()[0]['likes'] + 1)
-        if LIKE_SOURCE == 'LIKE-HOME':
-            return redirect('blog-home')
-        else:
-            return redirect(reverse('post-view', args=(post.values()[0]['key'],)))
-    except:
+            post.update(likes=post.first().likes + 1)
+
+        return next
+    except Exception as exception:
         messages.warning(request, "A problem was encountered. Could not like the post.")
+        messages.warning(request, f"Additional Information: {exception}")
         return redirect('blog-home')
 
 @login_required
 def view_post(request, key):
-    post = Post.objects.filter(key=key).values()[0]
+    if request.method == 'POST':
+        comment = CommentForm(request.POST)
+        if comment.is_valid():
+            Comment(
+                post=key,
+                user=request.user,
+                comment=comment.cleaned_data['comment'],
+                date=datetime.datetime.now(),
+                edited=0
+            ).save()
+
+            return redirect(reverse('post-view', args=(key,)))
+
+    post     = Post.objects.filter(key=key).first()
+    comments = [{'comment': comment, 'update_comment_form': UpdateCommentForm(instance=comment)} 
+                for comment in Comment.objects.order_by('-date').filter(post=key).all()]
     form = CommentForm()
-    current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
-    user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
-    user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
-    comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
-    liked = Like.objects.filter(user=request.user, post=key).values()
-    
+    try:
+        if Like.objects.filter(user=request.user).filter(post=key):
+            liked = True
+        else:
+            liked = False
+    except:
+        liked = False
+
     context = {
         'post': post,
         'form': form,
-        'comments': comments_and_forms,
-        'liked': True if liked else False,
+        'comments': comments,
+        'liked': liked
     }
-    if request.method == "POST":
-        if 'UPDATE-comment' in request.POST:
-            form = UpdateCommentForm(request.POST)
-            if form.is_valid():
-                form = form.cleaned_data
-            post = Post.objects.filter(key=key).values()[0]
-            form = CommentForm()
-            current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
-            user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
-            user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
-            comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
-            liked = Like.objects.filter(user=request.user, post=key).values()
-            
-            context = {
-                'post': post,
-                'form': form,
-                'comments': comments_and_forms,
-                'liked': True if liked else False,
-            }
-            return render(request, 'blog/view_post.html', context=context)
-        else:
-            form = CommentForm(request.POST)
-            if form.is_valid():
-                new_comment = form.cleaned_data['comment']
-                comment = Comment(
-                    post=key,
-                    user=request.user,
-                    comment=new_comment,
-                    date=datetime.datetime.now()
-                )
-                comment.save()
-            post = Post.objects.filter(key=key)
-            post.update(comments=post.values()[0]['comments'] + 1)
-            post = post.values()[0]
-            form = CommentForm()
-            current_comments   = Comment.objects.order_by('-date').filter(post=key).values()
-            user_comments      = [None if comment['user'] != str(request.user) else comment for comment in current_comments]
-            user_comment_forms = [None if not comment else bounded_comment_form(request, comment['key']) for comment in user_comments]
-            comments_and_forms = [{'comment':comment, 'update_comment_form':update_form} for comment, update_form in zip(current_comments, user_comment_forms)]
-            liked = Like.objects.filter(user=request.user, post=key).values()
-            
-            context = {
-                'post': post,
-                'form': form,
-                'comments': comments_and_forms,
-                'liked': True if liked else False,
-            }
-            return render(request, 'blog/view_post.html', context=context)
-    else:
-        return render(request, 'blog/view_post.html', context=context)
+        
+    return render(request, 'blog/view_post.html', context)
 
 @login_required
 def update_comment(request, commentkey, postkey):
@@ -251,15 +230,17 @@ def update_comment(request, commentkey, postkey):
         new_comment = form['comment']
         try:
             comment_to_update = Comment.objects.filter(key=commentkey)
-            if comment_to_update.values()[0]['user'] == str(request.user):
-                same_comment = comment_to_update.values()[0]['comment'] == new_comment
-                comment_to_update.update(comment=new_comment, date=datetime.datetime.now())
-                if comment_to_update.values()[0]['edited'] == 0 and not same_comment:
+            if comment_to_update.first().user == request.user:
+                same_comment = comment_to_update.first().comment == new_comment
+                if not same_comment:
+                    comment_to_update.update(comment=new_comment, date=datetime.datetime.now())
+                if comment_to_update.first().edited == 0 and not same_comment:
                     comment_to_update.update(edited=1)
             else:
                 messages.warning(request=request, message="You cannot update a comment that is not yours!")
-        except:
+        except Exception as exception:
             messages.warning(request=request, message="That comment does not exist!")
+            messages.warning(request=request, message=f"Additional Information: {exception}")
     else:
         messages.warning(request=request, message="Could not update comment.")
     return redirect(reverse('post-view', args=(postkey,)))
@@ -267,11 +248,12 @@ def update_comment(request, commentkey, postkey):
 @login_required   
 def delete_comment(request, commentkey, postkey):
     try:
-        comment_to_delete = Comment.objects.filter(key=commentkey)
-        if request.user.username == comment_to_delete.values()[0]['user']:
+        comment_to_delete = Comment.objects.filter(key=commentkey).first()
+        if request.user.username == comment_to_delete.user.username:
             comment_to_delete.delete()
         else:
-            messages.warning("You cannot delete a comment someone else created!") 
-    except:
-        messages.warning("Unable to delete comment.")
+            messages.warning(request, "You cannot delete a comment someone else created!") 
+    except Exception as exception:
+        messages.warning(request, f"Unable to delete comment. {exception}")
+
     return redirect(reverse('post-view', args=(postkey,)))

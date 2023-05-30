@@ -11,10 +11,10 @@
         <p>{{post.content}}</p>
       </div>
       <div class="post-view-bottom-row">
-        <span>{{post.author}}</span>
+        <span>{{ post.author.username }}</span>
         <div class="post-view-like-group">
-          {% if post.author != user.username %} {% if liked %}
-          <a href="{% url 'post-like' post.key %}">
+          {% if post.author.username != user.username %} {% if liked %}
+          <a href="{% url 'post-like' post.key %}?next={{ request.path|urlencode }}">
             <svg
               style="
                 fill: #df2626;
@@ -40,7 +40,7 @@
             </svg>
           </a>
           {% else %}
-          <a href="{% url 'post-like' post.key %}">
+          <a href="{% url 'post-like' post.key %}?next={{ request.path|urlencode }}">
             <svg
               style="fill: #ffffff"
               class="post-view-like"
@@ -89,11 +89,11 @@
         <div class="comment">
           <div class="comment-top-row">
             <div class="badges">
-              {% if comment.comment.user == user.username %}
+              {% if comment.comment.user.username == user.username %}
               <span class="badge rounded-pill bg-primary">You</span>
               {% else %}
-              <span class="badge rounded-pill bg-dark">{{comment.comment.user}}</span>
-              {% endif %} {% if post.author == comment.comment.user %}
+              <span class="badge rounded-pill bg-dark">{{comment.comment.user.username}}</span>
+              {% endif %} {% if post.author.username == comment.comment.user.username %}
               <span class="badge rounded-pill bg-secondary">Author</span>
               {% endif %}
             </div>
@@ -110,7 +110,7 @@
           <div class="collapse show comment-content" id="comment-{{comment.comment.key}}">
             <p class="comment-content">"{{comment.comment.comment}}"</p>
           </div>
-          {% if comment.comment.user == user.username %}
+          {% if comment.comment.user.username == user.username %}
           <div class="collapse" id="comment-{{comment.comment.key}}">
             <form method="POST" action="/comment/{{comment.comment.key}}/{{post.key}}/update">
               {% csrf_token %} {{ comment.update_comment_form|crispy }}
@@ -123,7 +123,7 @@
           </div>
           {% endif %}
           <div class="comment-buttons">
-            {% if comment.comment.user == user.username %}
+            {% if comment.comment.user.username == user.username %}
             <button class="btn btn-default" type="button" data-bs-toggle="collapse" data-bs-target="#comment-{{comment.comment.key}}" role="button" aria-expanded="false" aria-controls="comment-{{comment.comment.key}}">
               <svg
               class="edit-svg"

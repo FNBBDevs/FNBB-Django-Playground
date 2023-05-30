@@ -6,6 +6,7 @@
       {% csrf_token %} {{ form|crispy }}
       <div class="update-form-buttons">
         <div class="form-group">
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
             <button class="btn btn-outline-success" type="submit">Update Post</button>
           </div>
       </div>

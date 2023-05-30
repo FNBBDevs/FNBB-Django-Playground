@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.models import User
 from blog.models import Post
+from django.conf import settings
+
+import os
 
 
 def register(request):
@@ -26,22 +30,30 @@ def register(request):
 @login_required
 def profile(request):
         if request.method == 'POST':
-            user_update_form = UserUpdateForm(request.POST, instance=request.user)
+            user_update_form    = UserUpdateForm(request.POST, instance=request.user)
             profile_update_form = ProfileUpdateForm(request.POST, request.FILES,
                                                     instance=request.user.profile)
             
+           
             if user_update_form.is_valid() and profile_update_form.is_valid():
+
+                old_photo = User.objects.filter(id=request.user.id).first().profile.image
+
                 user_update_form.save()
                 profile_update_form.save()
+
+                incoming_photo = profile_update_form.cleaned_data['image']
+
+                if str(old_photo) not in str(incoming_photo) and 'default.png' not in str(old_photo):
+                    os.remove(f"{settings.MEDIA_ROOT}\{old_photo}")
+                     
                 messages.success(request, "Your profile has been updated successfully.")
                 return redirect('profile')
-
-
         else:
             user_update_form = UserUpdateForm(instance=request.user)
             profile_update_form = ProfileUpdateForm(instance=request.user.profile)
             you = User.objects.get(username=request.user)
-            your_posts = [post for post in Post.objects.all() if post.author==you.username]
+            your_posts = [post for post in Post.objects.all() if post.author.username==you.username]
             context = {
                 'you': you,
                 'posts': your_posts,

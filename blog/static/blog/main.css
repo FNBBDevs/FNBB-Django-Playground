@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Nunito&family=Poppins&display=swap');
 
 :root {
-  --main-color: #df2626;
+  /* --main-color: #df2626; */
+  --main-color: #2673df;
 }
 
 a {
@@ -178,6 +179,17 @@ body {
     border-radius: 10px;
     margin-bottom: 1rem;
     box-shadow: 10px 10px #33333396;
+  }
+
+  .home .home-posts .home-post-container {
+    padding: 2rem;
+  }
+
+
+
+  .home .home-posts .home-post .post-image {
+    margin-top: -50px;
+    margin-left: -50px;
   }
 
   .home .home-post .home-post-info {
