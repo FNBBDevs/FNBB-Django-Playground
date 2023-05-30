@@ -10,23 +10,18 @@
 
     <div class="home-post-container">
       <div class="home-post">
-        <img class="post-image rounded-circle article-img" src="{{ post.post.author.profile.image.url }}">
+        <div class="header-group">
+          <img class="post-image rounded-circle article-img" src="{{ post.post.author.profile.image.url }}">
+        <span class="home-post-author">{{post.post.author}}</span>
+        </div>
         <div class="home-post-header">
           <div class="home-post-header-title">
-            <h4 class="home-post-title">{{post.post.title}}</h4>
-          </div>
-          <div class="home-post-like-group">
-            {% if post.post.likes == 1 %}
-            <span class="home-post-likes">{{post.post.likes}} like</span>
-            {% else %}
-            <span class="home-post-likes">{{post.post.likes}} likes</span>
-            {% endif %}
+            {{post.post.title}}
           </div>
         </div>
-        <hr />
-        <p class="home-post-content">{{post.post.content}}</p>
+        <hr>
+        <p class="home-post-content">"{{post.post.content}}"</p>
         <div class="home-post-info">
-          <span class="home-post-author">{{post.post.author}}</span>
           <span class="home-post-date">{{post.post.date}}</span>
           <div class="home-post-footer">
             {% if post.post.author.username == user.username %}
@@ -146,7 +141,13 @@
                 <rect width="24" height="24" fill="white"/>
                 </clipPath>
                 </defs>
-                </svg></a>
+                </svg>
+              </a>
+                {% if post.post.likes == 1 %}
+                {{ post.post.likes }} like
+                {% else %}
+                {{ post.post.likes }} likes
+                {% endif %}
             </div>
           </div>
         </div>

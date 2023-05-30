@@ -188,8 +188,8 @@ body {
 
 
   .home .home-posts .home-post .post-image {
-    margin-top: -50px;
-    margin-left: -50px;
+    margin-top: -40px;
+    margin-left: -40px;
   }
 
   .home .home-post .home-post-info {
@@ -209,6 +209,19 @@ body {
     background-color: var(--main-color);
     padding: 0.25rem;
     border-radius: 10px;
+    margin-bottom: 0.25rem;
+  }
+
+  .home .home-post .header-group {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .home .home-post .home-post-header .home-post-header-title {
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+    font-size: 1.5rem;
   }
 
   .home .home-post .home-post-like-group {
@@ -233,6 +246,7 @@ body {
   .home .home-post .home-post-author {
     color: #333;
     font-weight: bold;
+    margin-bottom: .175rem;
   }
 
   .home .home-post .home-post-content {

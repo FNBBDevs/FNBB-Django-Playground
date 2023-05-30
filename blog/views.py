@@ -133,7 +133,7 @@ def delete_post(request, key):
         messages.warning(request, "A problem was encountered. Post not deleted.")
         return redirect(next)
 
-    if post_to_delete.author.username == request.user.username:
+    if post_to_delete and post_to_delete.author.username == request.user.username:
 
         # delete associated likes
         try:
