@@ -188,6 +188,8 @@ def like_post(request, key):
 
 @login_required
 def view_post(request, key):
+    post     = Post.objects.filter(key=key)
+
     if request.method == 'POST':
         comment = CommentForm(request.POST)
         if comment.is_valid():
@@ -199,9 +201,11 @@ def view_post(request, key):
                 edited=0
             ).save()
 
+            post.update(comments = post.first().comments + 1)
+
             return redirect(reverse('post-view', args=(key,)))
 
-    post     = Post.objects.filter(key=key).first()
+    post = post.first() 
     comments = [{'comment': comment, 'update_comment_form': UpdateCommentForm(instance=comment)} 
                 for comment in Comment.objects.order_by('-date').filter(post=key).all()]
     form = CommentForm()
@@ -251,6 +255,9 @@ def delete_comment(request, commentkey, postkey):
         comment_to_delete = Comment.objects.filter(key=commentkey).first()
         if request.user.username == comment_to_delete.user.username:
             comment_to_delete.delete()
+
+            post = Post.objects.filter(key=postkey)
+            post.update(comments=post.first().comments - 1)
         else:
             messages.warning(request, "You cannot delete a comment someone else created!") 
     except Exception as exception:

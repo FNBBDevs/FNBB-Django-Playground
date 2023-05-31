@@ -33,4 +33,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username}_commented_on_post_{self.post}"
+    
+
+class Friend(models.Model):
+    key          = models.AutoField(primary_key=True)
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    friends_with = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
+    since        = models.DateTimeField(default=datetime.datetime.now())
+
+    def __str__(self):
+        return f"{self.user.username} & {self.friend.username}"
 
