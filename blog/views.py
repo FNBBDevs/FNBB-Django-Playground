@@ -17,8 +17,9 @@ import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-from .models import Post, Like, Comment
+from .models import Post, Like, Comment, Friend
 from .forms import CreatePostForm, UpdatePostForm, CommentForm, UpdateCommentForm
+from users.models import User
 
 UPDATE_SOURCE = None
 LIKE_SOURCE   = None
@@ -264,3 +265,31 @@ def delete_comment(request, commentkey, postkey):
         messages.warning(request, f"Unable to delete comment. {exception}")
 
     return redirect(reverse('post-view', args=(postkey,)))
+
+def view_user(request, key):
+
+    if key == request.user.id:
+        return redirect('profile')
+
+    posts = Post.objects.filter(author=key).all()
+
+    try:
+        user_to_view = User.objects.filter(id=key).first()
+    except Exception as e:
+        messages.warning(request, "The requested user does not exist.")
+        return redirect('blog-home')
+    try:
+        friends = Friend.objects.filter(user=request.user).filter(friends_with=key).first()
+        if friends: friends = True
+        else: friends = False
+    except:
+        friends = False
+    
+    context = {
+        'posts': posts,
+        'user_to_view': user_to_view
+    }
+
+    return render(request, template_name='blog/view_user.html', context=context)
+
+

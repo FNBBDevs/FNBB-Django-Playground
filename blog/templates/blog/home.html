@@ -12,7 +12,7 @@
       <div class="home-post">
         <div class="header-group">
           <img class="post-image rounded-circle article-img" src="{{ post.post.author.profile.image.url }}">
-        <span class="home-post-author">{{post.post.author}}</span>
+        <span class="home-post-author"><a class="link-dark" href="{% url 'view-user' post.post.author.id %}">{{post.post.author}}</a></span>
         </div>
         <div class="home-post-header">
           <div class="home-post-header-title">
