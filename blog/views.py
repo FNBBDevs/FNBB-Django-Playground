@@ -5,21 +5,16 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView
-)
 
 import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-from .models import Post, Like, Comment, Friend
+from .models import Post, Like, Comment, Friend, Notification
 from .forms import CreatePostForm, UpdatePostForm, CommentForm, UpdateCommentForm
 from users.models import User
+
+import bruhcolor
 
 UPDATE_SOURCE = None
 LIKE_SOURCE   = None
@@ -32,20 +27,29 @@ def home(request):
     """
 
     user_likes = [like.post for like in Like.objects.all() if like.user.username == request.user.username]
+    print(user_likes)
 
     posts = Post.objects.order_by('-date').all()
 
     # a True/False list to indicate whether the user has liked 'this' post
-    true_likes = [post.key in user_likes for post in posts]
+    true_likes = [post in user_likes for post in posts]
 
     posts = [{'post':post, 'liked':like } for post, like in zip(posts, true_likes)]
+    print(posts)
+
+    try:
+        notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+    except Exception as exception:
+        print(f"[HOME]: an error was encountered getting notifications:\n\t{exception}")
+        notifications = None
 
     if not posts:
         messages.add_message(request, messages.INFO, "Looks like there aren't any posts yet.")
 
     context = {
         'title': 'Home',
-        'posts': posts
+        'posts': posts,
+        'notifications': notifications
     }
 
     return render(request=request, template_name="blog/home.html", context=context)
@@ -173,11 +177,35 @@ def like_post(request, key):
             key = existing_like.key
             existing_like.delete()
             post.update(likes=post.first().likes - 1)
+            try:
+                notifications_to_delete = Notification.objects.filter(
+                    notification_type='LIKE NOTIFICATION'
+                    ).filter(
+                    post=post.first()
+                    ).filter(
+                    user=request.user
+                    ).delete()
+            except Exception as exception:
+                print(f"[LIKE POST]: An error occured deleting the notification:\n\t{exception}")
         else:
             new_like = Like(
                 user = request.user,
-                post = key
+                post = post.first()
             )
+
+            try:
+                Notification(
+                    user = request.user,
+                    user_to_notify = post.first().author,
+                    notification_type = 'LIKE NOTIFICATION',
+                    content = f'{request.user.username} liked your post "{post.first().title}".',
+                    viewed = 0,
+                    date = datetime.datetime.now(),
+                    post = post.first()
+                ).save()
+            except Exception as exception:
+                pass
+
             new_like.save()
             post.update(likes=post.first().likes + 1)
 
@@ -189,18 +217,33 @@ def like_post(request, key):
 
 @login_required
 def view_post(request, key):
-    post     = Post.objects.filter(key=key)
+    post = Post.objects.filter(key=key)
 
     if request.method == 'POST':
         comment = CommentForm(request.POST)
         if comment.is_valid():
-            Comment(
-                post=key,
+            new_comment = Comment(
+                post=post.first(),
                 user=request.user,
                 comment=comment.cleaned_data['comment'],
                 date=datetime.datetime.now(),
                 edited=0
-            ).save()
+            )
+            new_comment.save()
+
+            if new_comment.user != post.first().author:
+                try:
+                    Notification(
+                        user = request.user,
+                        user_to_notify = post.first().author,
+                        notification_type = 'COMMENT NOTIFICATION',
+                        content = f'{request.user.username} commented on your post "{post.first().title}".',
+                        viewed = 0,
+                        date = datetime.datetime.now(),
+                        post = post.first()
+                    ).save()
+                except Exception as exception:
+                    pass
 
             post.update(comments = post.first().comments + 1)
 
@@ -256,9 +299,18 @@ def delete_comment(request, commentkey, postkey):
         comment_to_delete = Comment.objects.filter(key=commentkey).first()
         if request.user.username == comment_to_delete.user.username:
             comment_to_delete.delete()
-
             post = Post.objects.filter(key=postkey)
             post.update(comments=post.first().comments - 1)
+            try:
+                notifications_to_delete = Notification.objects.filter(
+                        notification_type='COMMENT NOTIFICATION'
+                        ).filter(
+                        post=post.first()
+                        ).filter(
+                        user=request.user
+                        ).delete()
+            except:
+                pass
         else:
             messages.warning(request, "You cannot delete a comment someone else created!") 
     except Exception as exception:
@@ -284,6 +336,11 @@ def view_user(request, key):
         else: friends = False
     except:
         friends = False
+
+    try:
+        users_likes = Like.objects.filter(user=user_to_view)
+    except:
+        pass
     
     context = {
         'posts': posts,
@@ -292,4 +349,17 @@ def view_user(request, key):
 
     return render(request, template_name='blog/view_user.html', context=context)
 
+@login_required
+def add_friend(request, key):
+    pass
+
+def remove_friend(request, key):
+    pass
+
+def clear_notification(request, key):
+    try:
+        Notification.objects.filter(key=key).update(viewed=1)
+    except Exception as exception:
+        pass
+    return redirect('blog-home')
 

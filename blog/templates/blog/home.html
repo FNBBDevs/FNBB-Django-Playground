@@ -7,7 +7,6 @@
   {% if user.is_authenticated %}
   <div class="home-posts">
     {% for post in posts %}
-
     <div class="home-post-container">
       <div class="home-post">
         <div class="header-group">
@@ -16,7 +15,7 @@
         </div>
         <div class="home-post-header">
           <div class="home-post-header-title">
-            {{post.post.title}}
+            <a class="link-light" href="{% url 'post-view' post.post.key %}">{{post.post.title}}</a>
           </div>
         </div>
         <hr>
