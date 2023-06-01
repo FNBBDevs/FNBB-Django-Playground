@@ -14,4 +14,6 @@ urlpatterns = [
     path('post/<int:key>/view', view=view_post, name='post-view'),
     path('comment/<int:commentkey>/<int:postkey>/update', view=update_comment, name='comment-update'),
     path('comment/<int:commentkey>/<int:postkey>/delete', view=delete_comment, name='comment-delete'),
+    path('user/<int:key>/view', view=view_user, name='view-user'),
+    path('notification/<int:key>/view', view=clear_notification, name='notification-view')
 ]

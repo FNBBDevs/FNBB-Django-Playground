@@ -68,6 +68,12 @@
           {% else %}
           <span>{{post.likes}} likes</span>
           {% endif %}
+          -
+          {% if post.comments == 1 %}
+          <span>{{post.comments}} comment</span>
+          {% else %}
+          <span>{{post.comments}} comments</span>
+          {% endif %}
         </div>
       </div>
     </div>
