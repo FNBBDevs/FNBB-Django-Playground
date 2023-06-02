@@ -1,6 +1,7 @@
 from typing import Optional
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -27,7 +28,6 @@ def home(request):
     """
 
     user_likes = [like.post for like in Like.objects.all() if like.user.username == request.user.username]
-    print(user_likes)
 
     posts = Post.objects.order_by('-date').all()
 
@@ -35,12 +35,10 @@ def home(request):
     true_likes = [post in user_likes for post in posts]
 
     posts = [{'post':post, 'liked':like } for post, like in zip(posts, true_likes)]
-    print(posts)
 
     try:
         notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
     except Exception as exception:
-        print(f"[HOME]: an error was encountered getting notifications:\n\t{exception}")
         notifications = None
 
     if not posts:
@@ -58,8 +56,15 @@ def about(request):
     """
     Function to render out the request page.
     """
+
+    try:
+        notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+    except Exception as exception:
+        notifications = None
+
     context = {
-        'title': 'About'
+        'title': 'About',
+        'notifications': notifications
     }
     return render(request, 'blog/about.html', context)
 
@@ -92,10 +97,16 @@ def create_post(request):
             ).save()
             return redirect('blog-home')
     else:
+        try:
+            notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+        except Exception as exception:
+            notifications = None
+
         form = CreatePostForm()
         context = {
             'title': 'Create Post',
             'form': form,
+            'notifications': notifications
         }
         return render(request, 'blog/create_post.html', context)
 
@@ -114,13 +125,20 @@ def update_post(request, key):
                 messages.warning(request, f'A problem was encountered. Could not update post: {exception}')
                 return redirect(next)
     else:
+
+        try:
+            notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+        except Exception as exception:
+            notifications = None
+
         post_to_edit = Post.objects.filter(key=key).first()
         if request.user.username == post_to_edit.author.username:
             form = UpdatePostForm(instance=post_to_edit)
             context = {
                 'form': form,
                 'key': key,
-                'title': 'Update Post'
+                'title': 'Update Post',
+                'notifications': notifications
             }
             return render(request, 'blog/update_post.html', context)
     return redirect(next)
@@ -217,6 +235,12 @@ def like_post(request, key):
 
 @login_required
 def view_post(request, key):
+
+    try:
+        notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+    except Exception as exception:
+        notifications = None
+
     post = Post.objects.filter(key=key)
 
     if request.method == 'POST':
@@ -262,10 +286,12 @@ def view_post(request, key):
         liked = False
 
     context = {
+        'title': f'{post.title}',
         'post': post,
         'form': form,
         'comments': comments,
-        'liked': liked
+        'liked': liked,
+        'notifications': notifications
     }
         
     return render(request, 'blog/view_post.html', context)
@@ -363,3 +389,54 @@ def clear_notification(request, key):
         pass
     return redirect('blog-home')
 
+def search(request):
+    if request.method == "POST":
+        try:
+            notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+        except Exception as exception:
+            notifications = None
+
+        query = request.POST['query'].lower()
+        posts = Post.objects.all()
+        users  = User.objects.all()
+        comments = Comment.objects.all()
+
+        posts = [post for post in posts if (query in post.content.lower() + post.title.lower() or query in post.title.lower())]
+        users = [user for user in users if query in user.username.lower() ]
+        comments = [comment for comment in comments if query in comment.comment.lower() + comment.user.username.lower()]
+        context = {
+            'query': query,
+            'posts': posts,
+            'users': users,
+            'comments': comments,
+            'notifications': notifications,
+            'title': 'Search Results'
+        }
+    else:
+        context = {
+            'title': 'Search Results'
+        }
+    
+    return render(request, template_name="blog/search.html", context=context)
+
+
+def autocomplete_search(request):
+    query = request.GET.get('query')
+
+    if query:
+        try:
+            notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+        except Exception as exception:
+            notifications = None
+
+        posts = Post.objects.all()
+        users  = User.objects.all()
+        comments = Comment.objects.all()
+
+        posts = [post.content for post in posts if (query in post.content.lower() or query in post.title.lower())]
+        users = [user.username for user in users if query in user.username.lower() ]
+        comments = [comment.comment for comment in comments if query in comment.comment.lower()]
+
+        return JsonResponse({'status': 200, 'data': users + posts + comments})
+    else:
+        return JsonResponse({'status': 200, 'data': []})

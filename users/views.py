@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.models import User
-from blog.models import Post
+from blog.models import Post, Notification
 from django.conf import settings
 
 import os
@@ -50,6 +50,10 @@ def profile(request):
                 messages.success(request, "Your profile has been updated successfully.")
                 return redirect('profile')
         else:
+            try:
+                notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+            except Exception as exception:
+                notifications = None
             user_update_form = UserUpdateForm(instance=request.user)
             profile_update_form = ProfileUpdateForm(instance=request.user.profile)
             you = User.objects.get(username=request.user)
@@ -59,6 +63,7 @@ def profile(request):
                 'posts': your_posts,
                 'title': 'Profile',
                 'user_update_form': user_update_form,
-                'profile_update_form': profile_update_form
+                'profile_update_form': profile_update_form,
+                'notifications': notifications
             }
         return render(request, 'users/profile.html', context)

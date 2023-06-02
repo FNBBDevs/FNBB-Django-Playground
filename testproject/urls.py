@@ -20,7 +20,7 @@ urlpatterns = [
     path('password-reset/complete', 
         view=auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),
         name='password_reset_complete'),
-    path('password-rese-confirm/<uidb64>/<token>/', 
+    path('password-reset-confirm/<uidb64>/<token>/', 
         view=auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'),
         name='password_reset_confirm'),
     path('profile/', user_views.profile, name='profile'),

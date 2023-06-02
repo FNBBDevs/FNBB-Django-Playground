@@ -457,3 +457,7 @@ body {
     align-items: center;
     justify-content: right;
   }
+
+  .notification-content {
+    color:#333;
+  }
