@@ -7,7 +7,13 @@
     {% if posts %}
     <ul class="list-group">
         {% for post in posts %}
-        <li class="list-group-item"> POST: {{post.title}} - {{post.content}}</li>
+        <li class="list-group-item">
+            <div>
+                <span class="search-post-title">
+                    <a class="link-light" href="{% url 'post-view' post.key %}">{{post.title}}</a>
+                </span>
+            </div>
+            <p>{{post.content}}</p></li>
         {% endfor %}
     </ul>
     {% else %}

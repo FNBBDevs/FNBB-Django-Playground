@@ -11,7 +11,7 @@ import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-from .models import Post, Like, Comment, Friend, Notification
+from .models import Post, Like, Comment, Friend, Notification, FriendRequest
 from .forms import CreatePostForm, UpdatePostForm, CommentForm, UpdateCommentForm
 from users.models import User
 
@@ -41,13 +41,19 @@ def home(request):
     except Exception as exception:
         notifications = None
 
+    try:
+        frs = FriendRequest.objects.filter(to_user=request.user).all()
+    except Exception as exception:
+        frs = None
+
     if not posts:
         messages.add_message(request, messages.INFO, "Looks like there aren't any posts yet.")
 
     context = {
         'title': 'Home',
         'posts': posts,
-        'notifications': notifications
+        'notifications': notifications,
+        'friend_requests': frs
     }
 
     return render(request=request, template_name="blog/home.html", context=context)
@@ -61,10 +67,15 @@ def about(request):
         notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
     except Exception as exception:
         notifications = None
+    try:
+        frs = FriendRequest.objects.filter(to_user=request.user).all()
+    except Exception as exception:
+        frs = None
 
     context = {
         'title': 'About',
-        'notifications': notifications
+        'notifications': notifications,
+        'friend_requests': frs
     }
     return render(request, 'blog/about.html', context)
 
@@ -89,24 +100,30 @@ def create_post(request):
     if request.method == "POST":
         form = CreatePostForm(request.POST)
         if form.is_valid():
-            Post(
+            post = Post(
                 author=request.user,
                 title=form.cleaned_data['title'],
                 content=form.cleaned_data['content'],
                 date=datetime.datetime.now()
             ).save()
+
             return redirect('blog-home')
     else:
         try:
             notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
         except Exception as exception:
             notifications = None
+        try:
+            frs = FriendRequest.objects.filter(to_user=request.user).all()
+        except Exception as exception:
+            frs = None
 
         form = CreatePostForm()
         context = {
             'title': 'Create Post',
             'form': form,
-            'notifications': notifications
+            'notifications': notifications,
+            'friend_requests': frs
         }
         return render(request, 'blog/create_post.html', context)
 
@@ -130,6 +147,10 @@ def update_post(request, key):
             notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
         except Exception as exception:
             notifications = None
+        try:
+            frs = FriendRequest.objects.filter(to_user=request.user).all()
+        except Exception as exception:
+            frs = None
 
         post_to_edit = Post.objects.filter(key=key).first()
         if request.user.username == post_to_edit.author.username:
@@ -138,7 +159,8 @@ def update_post(request, key):
                 'form': form,
                 'key': key,
                 'title': 'Update Post',
-                'notifications': notifications
+                'notifications': notifications,
+                'friend_requests': frs
             }
             return render(request, 'blog/update_post.html', context)
     return redirect(next)
@@ -240,6 +262,11 @@ def view_post(request, key):
         notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
     except Exception as exception:
         notifications = None
+    
+    try:
+        frs = FriendRequest.objects.filter(to_user=request.user).all()
+    except Exception as exception:
+        frs = None
 
     post = Post.objects.filter(key=key)
 
@@ -291,7 +318,8 @@ def view_post(request, key):
         'form': form,
         'comments': comments,
         'liked': liked,
-        'notifications': notifications
+        'notifications': notifications,
+        'friend_requests': frs
     }
         
     return render(request, 'blog/view_post.html', context)
@@ -357,31 +385,81 @@ def view_user(request, key):
         messages.warning(request, "The requested user does not exist.")
         return redirect('blog-home')
     try:
-        friends = Friend.objects.filter(user=request.user).filter(friends_with=key).first()
+        friends = Friend.objects.filter(user=request.user).filter(friends_with=user_to_view).first()
         if friends: friends = True
         else: friends = False
-    except:
+    except Exception as exception:
+        messages.warning(request, exception)
         friends = False
 
     try:
         users_likes = Like.objects.filter(user=user_to_view)
     except:
         pass
+
+    try:
+        notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
+    except Exception as exception:
+        notifications = None
     
+    try:
+        frs = FriendRequest.objects.filter(to_user=request.user).all()
+    except Exception as exception:
+        frs = None
+
     context = {
         'posts': posts,
-        'user_to_view': user_to_view
+        'user_to_view': user_to_view,
+        'friends': friends,
+        'notifications': notifications,
+        'friend_requests': frs
     }
+
+    print(context)
 
     return render(request, template_name='blog/view_user.html', context=context)
 
 @login_required
 def add_friend(request, key):
-    pass
-
+    try:
+        user_to_add = User.objects.filter(id=key).first()
+        friends = Friend.objects.filter(user=request.user).all()
+        if not friends:
+            # new_friend = Friend(
+            #     user = request.user,
+            #     friends_with = User.objects.filter(id=key).first(),
+            #     since = datetime.datetime.now()
+            # )
+            # new_friend.save()
+            if FriendRequest.objects.filter(to_user=user_to_add).first():
+                messages.info(request, 'You already ready sent a friend request to this user.')
+                return redirect(reverse('view-user', args=(key,)))
+            else:
+                FriendRequest(
+                    from_user = request.user,
+                    to_user = user_to_add,
+                    date = datetime.datetime.now()
+                ).save()
+                messages.info(request, f'A friend request has been sent to {user_to_add.username}')
+                return redirect(reverse('view-user', args=(key,)))
+        else:
+            messages.info(request, 'You are already friends with this user.')
+            return redirect(reverse('view-user', args=(key,)))
+    except Exception as exception:
+        print(exception)
+        return redirect(reverse('view-user', args=(key,)))
+    
+@login_required
 def remove_friend(request, key):
-    pass
+    try:
+        friends = Friend.objects.filter(user=request.user).all()
+        if friends:
+            friends.delete()
+        return redirect(reverse('view-user', args=(key,)))
+    except Exception as exception:
+        return redirect(reverse('view-user', args=(key,)))
 
+@login_required
 def clear_notification(request, key):
     try:
         Notification.objects.filter(key=key).update(viewed=1)
@@ -389,16 +467,22 @@ def clear_notification(request, key):
         pass
     return redirect('blog-home')
 
+@login_required
 def search(request):
     if request.method == "POST":
         try:
             notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
         except Exception as exception:
             notifications = None
+        
+        try:
+            frs = FriendRequest.objects.filter(to_user=request.user).all()
+        except Exception as exception:
+            frs = None
 
-        query = request.POST['query'].lower()
-        posts = Post.objects.all()
-        users  = User.objects.all()
+        query    = request.POST['query'].lower()
+        posts    = Post.objects.all()
+        users    = User.objects.all()
         comments = Comment.objects.all()
 
         posts = [post for post in posts if (query in post.content.lower() + post.title.lower() or query in post.title.lower())]
@@ -410,6 +494,7 @@ def search(request):
             'users': users,
             'comments': comments,
             'notifications': notifications,
+            'friend_requests': frs,
             'title': 'Search Results'
         }
     else:
@@ -419,22 +504,26 @@ def search(request):
     
     return render(request, template_name="blog/search.html", context=context)
 
-
+@login_required
 def autocomplete_search(request):
     query = request.GET.get('query')
 
     if query:
-        try:
-            notifications = Notification.objects.order_by('-date').filter(user_to_notify=request.user).filter(viewed=0).all()
-        except Exception as exception:
-            notifications = None
 
         posts = Post.objects.all()
         users  = User.objects.all()
         comments = Comment.objects.all()
+        friends = [friend.friends_with.username 
+                   for friend
+                   in Friend.objects.filter(user=request.user).all()]
 
-        posts = [post.content for post in posts if (query in post.content.lower() or query in post.title.lower())]
-        users = [user.username for user in users if query in user.username.lower() ]
+        posts = [post.content for post in posts if (
+            (query in post.content.lower() or 
+             query in post.title.lower()) 
+            and (post.author.username in friends or 
+                 post.author.profile.visibility == "Public" or 
+                 post.author == request.user))]
+        users = [user.username for user in users if query in user.username.lower() and user.profile.visibility == 'Public' ]
         comments = [comment.comment for comment in comments if query in comment.comment.lower()]
 
         return JsonResponse({'status': 200, 'data': users + posts + comments})

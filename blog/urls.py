@@ -17,5 +17,7 @@ urlpatterns = [
     path('user/<int:key>/view', view=view_user, name='view-user'),
     path('notification/<int:key>/view', view=clear_notification, name='notification-view'),
     path('search/', view=search, name='search'),
-    path('autocomplete/', view=autocomplete_search, name='autocomplete')
+    path('autocomplete/', view=autocomplete_search, name='autocomplete'),
+    path('friend/<int:key>/add', view=add_friend, name='friend-add'),
+    path('friend/<int:key>/remove', view=remove_friend, name='friend-remove'),
 ]

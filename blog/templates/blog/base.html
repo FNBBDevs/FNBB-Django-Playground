@@ -57,26 +57,30 @@
                 >About</a
               >
               <a class="nav-item nav-link" href="{% url 'post-create'%}"
-                >Create Post</a
+                >Create</a
               >
               {% if user.is_authenticated %}
-              <form class="d-flex" action="{% url 'search' %}" method="POST" autocomplete="off">
-              {% csrf_token %}
-                <div
-                id="autocomplete"
+              <form
                 class="d-flex"
+                action="{% url 'search' %}"
+                method="POST"
+                autocomplete="off"
               >
-                <input
-                  class="form-control me-2"
-                  type="search"
-                  name="query"
-                  placeholder="Search"
-                  aria-label="Search"
-                  autocomplete="off"
-                />
-                <ul class="autocomplete-result-list"></ul>
-              </div>
-              <button class="btn btn-outline-light" type="submit">Search</button>
+                {% csrf_token %}
+                <div id="autocomplete" class="d-flex">
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    name="query"
+                    placeholder="Search"
+                    aria-label="Search"
+                    autocomplete="off"
+                  />
+                  <ul class="autocomplete-result-list"></ul>
+                </div>
+                <button class="btn btn-outline-light" type="submit">
+                  Search
+                </button>
               </form>
               {% endif %}
             </div>
@@ -115,8 +119,7 @@
         </div>
         {% endfor %} {% endif %}
 
-        <div class="col-md-8">
-          {% block content %} {% endblock %}</div>
+        <div class="col-md-8">{% block content %} {% endblock %}</div>
         {% if user.is_authenticated %}
         <div class="col-md-4">
           <h3>Notifications</h3>
@@ -145,6 +148,23 @@
               </div>
               <div class="notification-content">
                 <p>{{ notification.content }}</p>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% if friend_requests %}
+          <h3>Friend Requests</h3>
+          <hr />
+          <ul class="list-group">
+            {% for fr in friend_requests %}
+            <li class="d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-secondary">{{fr.date}}</span>
+                <!--ACCEPT OR DECLINE BUTTONS HERE-->
+              </div>
+              <div class="notification-content">
+                From: <p>{{ fr.from_user.username }}</p>
               </div>
             </li>
             {% endfor %}
@@ -184,7 +204,7 @@
                 resolve(data.data);
               });
           });
-        }
+        },
       });
     </script>
   </body>
