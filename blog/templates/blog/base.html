@@ -97,6 +97,7 @@
                 >Register</a
               >
               {% endif %}
+              <a class="nav-item nav-link" href="{% url 'homebase-home' %}">Homebase</a>
             </div>
           </div>
         </div>
@@ -123,7 +124,6 @@
         {% if user.is_authenticated %}
         <div class="col-md-4">
           <h3>Notifications</h3>
-          <hr />
           {% if notifications %}
           <ul class="list-group">
             {% for notification in notifications %}
@@ -155,7 +155,6 @@
           {% endif %}
           {% if friend_requests %}
           <h3>Friend Requests</h3>
-          <hr />
           <ul class="list-group">
             {% for fr in friend_requests %}
             <li class="d-flex flex-column">
@@ -196,7 +195,7 @@
     <script>
       new Autocomplete("#autocomplete", {
         search: (query) => {
-          const url = `/autocomplete/?query=${query}`;
+          const url = `/blog/autocomplete/?query=${query}`;
           return new Promise((resolve) => {
             fetch(url)
               .then((response) => response.json())

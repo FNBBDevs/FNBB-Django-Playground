@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
+    'homebase.apps.HomebaseConfig',
+    'keyword_highlighting.apps.KeywordHighlightingConfig',
     'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
