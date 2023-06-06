@@ -33,16 +33,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username}_commented_on_post_{self.post}"
-    
 
 class Friend(models.Model):
     key          = models.AutoField(primary_key=True)
-    user        = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend_user')
-    friends_with = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend_user')
+    friends_with = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends_with')
     since        = models.DateTimeField(default=datetime.datetime.now())
 
     def __str__(self):
-        return f"{self.user.username} & {self.friend.username}"
+        return f"{self.user.username} & {self.friends_with.username}"
     
 class Notification(models.Model):
     LIKE_NOTIFICATION           = 'LIKE NOTIFICATION'
@@ -68,4 +67,13 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.key}_{self.user.username}_{self.notification_type}"
+
+class FriendRequest(models.Model):
+    key = models.AutoField(primary_key=True)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_user')
+    to_user   = models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
+    date      = models.DateTimeField(default=datetime.datetime.now())
+
+    def __str__(self):
+        return f"{self.from_user.username} wants to be friends with {self.to_user.username}"
 

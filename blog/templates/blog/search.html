@@ -1,0 +1,43 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="search">
+    <h5>Query: <span class="badge bg-secondary">{{query}}</span></h5>
+    <h3>Posts</h3>
+    {% if posts %}
+    <ul class="list-group">
+        {% for post in posts %}
+        <li class="list-group-item">
+            <div>
+                <span class="search-post-title">
+                    <a class="link-light" href="{% url 'post-view' post.key %}">{{post.title}}</a>
+                </span>
+            </div>
+            <p>{{post.content}}</p></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <li class="list-group-item">No Post Results for "{{query}}".</li>
+    {% endif %}
+    <h4>Users</h4>
+    {% if users %}
+    <ul class="list-group">
+        {% for user in users %}
+        <li class="list-group-item">USER: {{user.username}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <li class="list-group-item">No User Results for "{{query}}".</li>
+    {% endif %}
+    <h4>Comments</h4>
+    {% if comments %}
+    <ul class="list-group">
+        {% for comment in comments %}
+        <li class="list-group-item">COMMENT: {{comment.comment}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <li class="list-group-item">No Comment Results for "{{query}}".</li>
+    {% endif %}
+</div>
+{% endblock content %}

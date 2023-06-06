@@ -4,7 +4,7 @@ from .models import Post, Comment
 
 class CreatePostForm(forms.Form):
     title   = forms.CharField(label="Title")
-    content = forms.CharField(label="Post")
+    content = forms.CharField(widget=forms.Textarea)
 
 class UpdatePostForm(forms.ModelForm):
     class Meta:

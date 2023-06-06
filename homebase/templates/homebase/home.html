@@ -1,0 +1,8 @@
+{% extends "homebase/base.html" %}
+{% block content %}
+<div class="homebase-home">
+    <h1>HOMEBASE HOME</h1>
+    <a href="{% url 'blog-home' %}" class="btn btn-primary btn-lg" role="button">Blog</a>
+    <a href="{% url 'kwh-home' %}" class="btn btn-primary btn-lg" role="button">KWH</a>
+</div>
+{% endblock content %}

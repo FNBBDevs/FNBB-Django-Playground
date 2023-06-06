@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Nunito&family=Poppins&display=swap');
+
+:root {
+  /* --main-color: #df2626; */
+  --main-color: #ff6600;
+}
+
+a {
+  text-decoration: none;
+}
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+    background: #FFFFFF;
+    color: var(--main-color);
+    margin-top: 5rem;
+  }
+
+  #buttons {
+    position: absolute;
+  }
+
+  .buttons li{
+    display: inline;
+    padding: 10px;
+  }
+  
+  input {
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+    font-size: 16px;
+  }
+  
+  .no-outline:focus {
+    outline: none;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #444444;
+  }
+  
+  ul {
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .bg-steel {
+    background-color: var(--main-color);
+  }
+
+  .file-view {
+    overflow-y: auto;
+    height: 60vh;
+    border: 2px #3333334c solid;
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 10px 10px #33333396;
+  }
+
+  .file-view .file-line {
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .file-view-container .search-form {
+    margin-bottom: 1rem;
+  }
+
+.highlight {
+    background-color: #ff66007e;
+    color: #333;
+  }
