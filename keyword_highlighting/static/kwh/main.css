@@ -57,3 +57,27 @@ body {
   .bg-steel {
     background-color: var(--main-color);
   }
+
+  .file-view {
+    overflow-y: auto;
+    height: 60vh;
+    border: 2px #3333334c solid;
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 10px 10px #33333396;
+  }
+
+  .file-view .file-line {
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .file-view-container .search-form {
+    margin-bottom: 1rem;
+  }
+
+.highlight {
+    background-color: #ff66007e;
+    color: #333;
+  }
