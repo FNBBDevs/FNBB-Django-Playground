@@ -55,8 +55,7 @@ def view_file(request):
         keyword = request.POST.get('keyword')
         print(f'VIEW FILE: GOT KEYWORD: {keyword}')
         if keyword:
-            keyword = keyword.lower()
-
-            context['keyword'] = keyword
+            context['keyword'] = keyword.lower()
+            context['query'] = keyword
 
     return render(request, 'kwh/view_file.html', context=context)
