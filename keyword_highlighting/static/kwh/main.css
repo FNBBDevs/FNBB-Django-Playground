@@ -19,14 +19,14 @@ body::-webkit-scrollbar {
 
 .file-view::-webkit-scrollbar {
   width: 16px;
-  background-color: #b8b8b896;
+  background-color: #91919196;
   border: 4px solid transparent;
   border-radius: 8px;
   background-clip: padding-box;
 }
 
 .file-view::-webkit-scrollbar-thumb {
-  background-color: #818B99;
+  background-color: #33333396;
   border: 4px solid transparent;
   border-radius: 8px;
   background-clip: content-box;
@@ -34,14 +34,14 @@ body::-webkit-scrollbar {
 
 .file-line::-webkit-scrollbar {
   width: 16px;
-  background-color: #b8b8b896;
+  background-color: #91919196;
   border: 4px solid transparent;
   border-radius: 8px;
   background-clip: padding-box;
 }
 
 .file-line::-webkit-scrollbar-thumb {
-  background-color: #818B99;
+  background-color: #33333396;
   border: 4px solid transparent;
   border-radius: 8px;
   background-clip: content-box;
@@ -90,7 +90,7 @@ body {
 
   .file-view {
     height: 60vh;
-    border: 2px #3333334c solid;
+    border: 2px #33333396 solid;
     padding: 0.5rem;
     border-radius: 10px;
     margin-bottom: 1rem;
@@ -112,4 +112,11 @@ body {
 .highlight {
     background-color: #ff66007e;
     color: #333;
+  }
+
+  .file-view .group {
+    border: solid 2px #3333334c;
+    border-radius: 10px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
   }
