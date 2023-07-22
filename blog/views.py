@@ -202,9 +202,9 @@ def delete_post(request, key):
 def like_post(request, key):
 
     try:
-        next = redirect(reverse('post-view', args=(key,))) if '/view' in request.META.get('HTTP_REFERER', '/') else redirect('/home/')
+        next = redirect(reverse('post-view', args=(key,))) if '/view' in request.META.get('HTTP_REFERER', '/') else redirect('/blog/home/')
     except:
-        next = redirect('/home/')
+        next = redirect('/blog/home/')
 
     try:
         post = Post.objects.filter(key=key)
@@ -425,12 +425,6 @@ def add_friend(request, key):
         user_to_add = User.objects.filter(id=key).first()
         friends = Friend.objects.filter(user=request.user).all()
         if not friends:
-            # new_friend = Friend(
-            #     user = request.user,
-            #     friends_with = User.objects.filter(id=key).first(),
-            #     since = datetime.datetime.now()
-            # )
-            # new_friend.save()
             if FriendRequest.objects.filter(to_user=user_to_add).first():
                 messages.info(request, 'You already ready sent a friend request to this user.')
                 return redirect(reverse('view-user', args=(key,)))
@@ -529,3 +523,28 @@ def autocomplete_search(request):
         return JsonResponse({'status': 200, 'data': users + posts + comments})
     else:
         return JsonResponse({'status': 200, 'data': []})
+    
+@login_required
+def accept_friend_request(request, key1, key2):
+    # check to make sure not friend TODO
+
+    if request.user.id == key1:
+        new_friend = Friend(
+            user = request.user,
+            friends_with = User.objects.filter(id=key2).first(),
+            since = datetime.datetime.now()
+        )
+        new_friend.save()
+        messages.success(request, "Friend has been added.")
+    elif request.user.id == key2:
+        new_friend = Friend(
+            user = request.user,
+            friends_with = User.objects.filter(id=key1).first(),
+            since = datetime.datetime.now()
+        )
+        new_friend.save()
+        messages.success(request, "Friend has been added.")
+    else:
+        messages.warning(request, 'Could not accept friend request.')
+    
+    return render(request, 'blog/home.html')

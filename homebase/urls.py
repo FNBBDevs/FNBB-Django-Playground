@@ -7,4 +7,5 @@ urlpatterns = [
     path('homebase/about/', view=about, name='homebase-about'),
     path('', include('keyword_highlighting.urls')),
     path('', include('blog.urls')),
+    path('', include('song.urls'))
 ]

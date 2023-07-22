@@ -160,7 +160,8 @@
             <li class="d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center">
                 <span class="badge bg-secondary">{{fr.date}}</span>
-                <!--ACCEPT OR DECLINE BUTTONS HERE-->
+                <a href="{%url 'accept-friend' fr.from_user.id fr.to_user.id %}">ACCEPT</a>
+                <a href="">DECLINE</a>
               </div>
               <div class="notification-content">
                 From: <p>{{ fr.from_user.username }}</p>

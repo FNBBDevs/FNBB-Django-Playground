@@ -1,0 +1,49 @@
+{% extends "song/base.html" %}
+{% load render_table from django_tables2 %}
+{% block content %}
+<div class="view-table">
+    <h1>TABLE</h1>
+    <div class="table">
+        {% render_table table %}
+    </div>
+    <!--<div class="song_table">
+        <table class="table">
+            <thead>
+                <th scope="col">Track</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Album</th>
+                <th scope="col">Time</th>
+                <th scope="col">Date</th>
+            </thead>
+            <tbody>
+                {% for song in page_obj %}
+                <tr>
+                    <td>{{song.track}}</td>
+                    <td>{{song.artist}}</td>
+                    <td>{{song.album}}</td>
+                    <td>{{song.time}}</td>
+                    <td>{{song.date}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>-->
+</div>
+{% endblock content %}

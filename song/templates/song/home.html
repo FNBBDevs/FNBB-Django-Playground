@@ -1,0 +1,8 @@
+{% extends "song/base.html" %}
+{% block content %}
+<div class="song-home">
+    <h1>SONG HOME</h1>
+    <a href="{% url 'song-file-upload' %}" class="btn btn-primary btn-lg" role="button">Upload File</a>
+    <a href="{% url 'song-view-tables' %}" class="btn btn-primary btn-lg" role="button">View Tables</a>
+</div>
+{% endblock content %}

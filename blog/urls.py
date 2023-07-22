@@ -20,4 +20,5 @@ urlpatterns = [
     path('blog/autocomplete/', view=autocomplete_search, name='autocomplete'),
     path('blog/friend/<int:key>/add', view=add_friend, name='friend-add'),
     path('blog/friend/<int:key>/remove', view=remove_friend, name='friend-remove'),
+    path('blog/friend/<int:key1>/<int:key2>/accept', view=accept_friend_request, name='accept-friend')
 ]

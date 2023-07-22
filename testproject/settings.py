@@ -42,10 +42,12 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'homebase.apps.HomebaseConfig',
     'keyword_highlighting.apps.KeywordHighlightingConfig',
+    'song.apps.SongConfig',
     'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'django_tables2'
 ]
 
 MIDDLEWARE = [
@@ -143,3 +145,5 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5.html"
