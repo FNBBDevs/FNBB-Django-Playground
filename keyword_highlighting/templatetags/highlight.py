@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.filter()
 def highlight_yellow(text, value):
-    if text is not None and value != '':
+    if text is not None and value != "":
         ori_text = str(text)
         lowered_text = ori_text.lower()
         ori_value = value
@@ -16,7 +16,11 @@ def highlight_yellow(text, value):
         offset = 0
         if x := re.finditer(lowered_value, lowered_text):
             for occurence in x:
-                ori_text = ori_text[:occurence.start() + offset] + f'<span class="highlight">{ori_text[occurence.start() + offset: occurence.end() + offset]}</span>' + ori_text[occurence.end() + offset:]
+                ori_text = (
+                    ori_text[: occurence.start() + offset]
+                    + f'<span class="highlight">{ori_text[occurence.start() + offset: occurence.end() + offset]}</span>'
+                    + ori_text[occurence.end() + offset :]
+                )
                 offset += 31
         str_replaced = ori_text
     else:

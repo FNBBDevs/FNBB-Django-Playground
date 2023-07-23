@@ -13,7 +13,8 @@
                     <a class="link-light" href="{% url 'post-view' post.key %}">{{post.title}}</a>
                 </span>
             </div>
-            <p>{{post.content}}</p></li>
+            <p>{{post.content}}</p>
+        </li>
         {% endfor %}
     </ul>
     {% else %}

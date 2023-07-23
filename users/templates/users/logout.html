@@ -1,5 +1,6 @@
-{% extends "blog/base.html" %}
+{% extends "homebase/base.html" %}
 {% block content %}
+
 <body>
     <h2>You have been logged out</h2>
     <div class="border-top pt-3">
@@ -7,7 +8,7 @@
             Already Have An Account? <a class="a-login" href="{% url 'login' %}">Login</a>
         </small>
         <small class="text-muted">
-            Welcome Page <a class="a-welcome" href="{% url 'blog-welcome' %}">Welcome</a>
+            Welcome Page <a class="a-welcome" href="{% url 'homebase-home' %}">Welcome</a>
         </small>
     </div>
 </body>

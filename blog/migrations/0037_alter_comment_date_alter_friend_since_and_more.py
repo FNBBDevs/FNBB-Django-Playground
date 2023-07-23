@@ -5,35 +5,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0036_alter_comment_date_alter_friend_since_and_more'),
+        ("blog", "0036_alter_comment_date_alter_friend_since_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)),
+            model_name="comment",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='since',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)),
+            model_name="friend",
+            name="since",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)
+            ),
         ),
         migrations.AlterField(
-            model_name='friendrequest',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 21, 30, 47, 88847)),
+            model_name="friendrequest",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 21, 30, 47, 88847)
+            ),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)),
+            model_name="notification",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 21, 30, 47, 87847)
+            ),
         ),
     ]

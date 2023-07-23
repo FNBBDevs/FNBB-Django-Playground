@@ -2,14 +2,14 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="update">
-    <form class="update-form" action="" method="POST">
-      {% csrf_token %} {{ form|crispy }}
-      <div class="update-form-buttons">
-        <div class="form-group">
-            <input type="hidden" name="next" value="{{ request.GET.next }}">
-            <button class="btn btn-outline-success" type="submit">Update Post</button>
-          </div>
+  <form class="update-form" action="" method="POST">
+    {% csrf_token %} {{ form|crispy }}
+    <div class="update-form-buttons">
+      <div class="form-group">
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <button class="btn btn-outline-success" type="submit">Update Post</button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
 {% endblock content %}

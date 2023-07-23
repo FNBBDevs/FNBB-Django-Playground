@@ -18,66 +18,126 @@ body::-webkit-scrollbar {
 }
 
 body {
-    background: #FFFFFF;
-    color: var(--main-color);
-    margin-top: 5rem;
-  }
+  background: #FFFFFF;
+  color: var(--main-color);
+  margin-top: 5rem;
+}
 
-  #buttons {
-    position: absolute;
-  }
+#buttons {
+  position: absolute;
+}
 
-  .buttons li{
-    display: inline;
-    padding: 10px;
-  }
-  
-  input {
-    border: none;
-    background-color: transparent;
-    resize: none;
-    outline: none;
-    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
-    font-size: 16px;
-  }
-  
-  .no-outline:focus {
-    outline: none;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    color: #444444;
-  }
-  
-  ul {
-    margin: 0;
-    list-style-type: none;
-  }
-  
-  .bg-steel {
-    background-color: var(--main-color);
-  }
+.buttons li {
+  display: inline;
+  padding: 10px;
+}
 
-  .file-view {
-    overflow-y: auto;
-    height: 60vh;
-    border: 2px #3333334c solid;
-    padding: 0.5rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    box-shadow: 10px 10px #33333396;
-  }
+input {
+  border: none;
+  background-color: transparent;
+  resize: none;
+  outline: none;
+  font-family: Inter, Helvetica, "Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", EmojiSymbols, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", sans-serif;
+  font-size: 16px;
+}
 
-  .file-view .file-line {
-    color: #333;
-    font-family: 'Poppins', sans-serif;
-  }
+.no-outline:focus {
+  outline: none;
+}
 
-  .file-view-container .search-form {
-    margin-bottom: 1rem;
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #444444;
+}
+
+ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+.bg-steel {
+  background-color: var(--main-color);
+}
+
+.file-view {
+  overflow-y: auto;
+  height: 60vh;
+  border: 2px #3333334c solid;
+  padding: 0.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 10px 10px #33333396;
+}
+
+.file-view .file-line {
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+}
+
+.file-view-container .search-form {
+  margin-bottom: 1rem;
+}
 
 .highlight {
-    background-color: #ff66007e;
-    color: #333;
-  }
+  background-color: #ff66007e;
+  color: #333;
+}
+
+.profile-post {
+  border: 2px #3333334c solid;
+  padding: 0.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  box-shadow: 10px 10px #33333396;
+  transition: ease all 0.5s;
+}
+
+.profile-posts .profile-post-a {
+  text-decoration: none;
+}
+
+.profile-post .profile-post-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-post .profile-post-title {
+  color:#333;
+}
+
+.post-info-date-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.profile-post .profile-post-date {
+  color: #FFFFFF;
+  background-color: var(--main-color);
+  padding: 5px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  width: fit-content;
+}
+
+.profile-post .profile-post-footer {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.profile-post .delete-svg {
+  filter: invert(18%) sepia(87%) saturate(4345%) hue-rotate(352deg) brightness(93%) contrast(88%);
+}
+
+.edit-svg {
+  filter: invert(30%) sepia(91%) saturate(1400%) hue-rotate(186deg) brightness(92%) contrast(104%);
+}
+
+.delete-svg {
+  filter: invert(18%) sepia(87%) saturate(4345%) hue-rotate(352deg) brightness(93%) contrast(88%);
+}

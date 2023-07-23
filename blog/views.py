@@ -168,9 +168,9 @@ def update_post(request, key):
 @login_required
 def delete_post(request, key):
     try:
-        next = '/home/' if '/home' in request.META.get('HTTP_REFERER', '/') else '/profile/'
+        next = '/blog/home/' if '/home/' in request.META.get('HTTP_REFERER', '/') else '/homebase/profile/'
     except:
-        next = '/profile/'
+        next = '/homebase/profile/'
 
     try:
         post_to_delete = Post.objects.order_by('-date').filter(key=key).first()
@@ -511,7 +511,7 @@ def autocomplete_search(request):
                    for friend
                    in Friend.objects.filter(user=request.user).all()]
 
-        posts = [post.content for post in posts if (
+        posts = [post.title + ": " + post.content for post in posts if (
             (query in post.content.lower() or 
              query in post.title.lower()) 
             and (post.author.username in friends or 

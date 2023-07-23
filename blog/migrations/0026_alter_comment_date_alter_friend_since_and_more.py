@@ -7,43 +7,86 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('blog', '0025_alter_comment_date_alter_comment_post_and_more'),
+        ("blog", "0025_alter_comment_date_alter_comment_post_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)),
+            model_name="comment",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='since',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)),
+            model_name="friend",
+            name="since",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friend_user', to=settings.AUTH_USER_MODEL),
+            model_name="friend",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="friend_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)
+            ),
         ),
         migrations.CreateModel(
-            name='Notification',
+            name="Notification",
             fields=[
-                ('key', models.AutoField(primary_key=True, serialize=False)),
-                ('notification_type', models.CharField(choices=[('LIKE NOTIFICATION', 'Like Notification'), ('COMMENT NOTIFICATION', 'Comment Notification'), ('FRIEND REQUEST NOTIFICATION', 'Friend Request Notification'), ('STANDARD NOTIFICATION', 'Notification')], default='STANDARD NOTIFICATION', max_length=30)),
-                ('content', models.TextField(default='')),
-                ('viewed', models.IntegerField(default=0)),
-                ('date', models.DateTimeField(default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478))),
-                ('post', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='blog.post')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notification_user', to=settings.AUTH_USER_MODEL)),
+                ("key", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "notification_type",
+                    models.CharField(
+                        choices=[
+                            ("LIKE NOTIFICATION", "Like Notification"),
+                            ("COMMENT NOTIFICATION", "Comment Notification"),
+                            (
+                                "FRIEND REQUEST NOTIFICATION",
+                                "Friend Request Notification",
+                            ),
+                            ("STANDARD NOTIFICATION", "Notification"),
+                        ],
+                        default="STANDARD NOTIFICATION",
+                        max_length=30,
+                    ),
+                ),
+                ("content", models.TextField(default="")),
+                ("viewed", models.IntegerField(default=0)),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=datetime.datetime(2023, 5, 31, 19, 59, 48, 731478)
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        default=None,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="blog.post",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notification_user",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

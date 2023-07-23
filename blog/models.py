@@ -56,14 +56,14 @@ class Notification(models.Model):
         (STANDARD_NOTIFICATION, 'Notification')
     )
 
-    key  = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_user', default=6)
-    user_to_notify = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_user_to_notify', default=6)
+    key               = models.AutoField(primary_key=True)
+    user              = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_user', default=6)
+    user_to_notify    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_user_to_notify', default=6)
     notification_type = models.CharField(max_length=30, default=STANDARD_NOTIFICATION, choices=NOTIFICATION_TYPES)
-    content = models.TextField(default='')
-    viewed = models.IntegerField(default=0)
-    date = models.DateTimeField(default=datetime.datetime.now())
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None)
+    content           = models.TextField(default='')
+    viewed            = models.IntegerField(default=0)
+    date              = models.DateTimeField(default=datetime.datetime.now())
+    post              = models.ForeignKey(Post, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return f"{self.key}_{self.user.username}_{self.notification_type}"

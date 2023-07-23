@@ -5,25 +5,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0023_alter_comment_date_alter_friend_since_and_more'),
+        ("blog", "0023_alter_comment_date_alter_friend_since_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 16, 40, 35, 947480)),
+            model_name="comment",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 16, 40, 35, 947480)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='since',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 16, 40, 35, 947480)),
+            model_name="friend",
+            name="since",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 16, 40, 35, 947480)
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 16, 40, 35, 946480)),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 16, 40, 35, 946480)
+            ),
         ),
     ]

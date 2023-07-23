@@ -5,30 +5,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0033_alter_comment_date_alter_friend_since_and_more'),
+        ("blog", "0033_alter_comment_date_alter_friend_since_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)),
+            model_name="comment",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='since',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)),
+            model_name="friend",
+            name="since",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)
+            ),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 20, 56, 2, 808272)),
+            model_name="notification",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 20, 56, 2, 808272)
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 6, 1, 20, 56, 2, 807272)
+            ),
         ),
     ]

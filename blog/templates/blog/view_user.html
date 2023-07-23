@@ -2,10 +2,7 @@
 <div class="profile-header">
   <div class="profile-banner">
     <div class="profile-image-container">
-      <img
-        class="rounded-circle account-img"
-        src="{{ user_to_view.profile.image.url }}"
-      />
+      <img class="rounded-circle account-img" src="{{ user_to_view.profile.image.url }}" />
     </div>
     <div class="profile-view-body d-flex flex-column align-items-right">
       <div class="profile-content d-flex flex-column align-items-left justify-content-center">
@@ -14,68 +11,31 @@
       </div>
     </div>
   </div>
-  <div
-        class="profile-content-footer d-flex align-items-center justify-content-end" style="width: 100%;"
-      >
-        {% if not friends %}
-        <a href="{% url 'friend-add' user_to_view.id %}">
-          <svg
-          width="40px"
-          height="40px"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3 19C3.69137 16.6928 5.46998 16 9.5 16C13.53 16 15.3086 16.6928 16 19"
-            stroke="#323232"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <path
-            d="M13 9.5C13 11.433 11.433 13 9.5 13C7.567 13 6 11.433 6 9.5C6 7.567 7.567 6 9.5 6C11.433 6 13 7.567 13 9.5Z"
-            stroke="#323232"
-            stroke-width="2"
-          />
-          <path
-            d="M15 6H21"
-            stroke="#323232"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M18 3L18 9"
-            stroke="#323232"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        </a>
-        {% else %}
-        <a href="{% url 'friend-remove' user_to_view.id %}">
-          <svg
-            width="40px"
-            height="40px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g id="User / User_Remove">
-              <path
-                id="Vector"
-                d="M15 19C15 16.7909 12.3137 15 9 15C5.68629 15 3 16.7909 3 19M15 13H21M9 12C6.79086 12 5 10.2091 5 8C5 5.79086 6.79086 4 9 4C11.2091 4 13 5.79086 13 8C13 10.2091 11.2091 12 9 12Z"
-                stroke="#000000"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-          </svg>
-        </a>
-        {% endif %}
-      </div>
+  <div class="profile-content-footer d-flex align-items-center justify-content-end" style="width: 100%;">
+    {% if not friends %}
+    <a href="{% url 'friend-add' user_to_view.id %}">
+      <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 19C3.69137 16.6928 5.46998 16 9.5 16C13.53 16 15.3086 16.6928 16 19" stroke="#323232"
+          stroke-width="2" stroke-linecap="round" />
+        <path
+          d="M13 9.5C13 11.433 11.433 13 9.5 13C7.567 13 6 11.433 6 9.5C6 7.567 7.567 6 9.5 6C11.433 6 13 7.567 13 9.5Z"
+          stroke="#323232" stroke-width="2" />
+        <path d="M15 6H21" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M18 3L18 9" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+    {% else %}
+    <a href="{% url 'friend-remove' user_to_view.id %}">
+      <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g id="User / User_Remove">
+          <path id="Vector"
+            d="M15 19C15 16.7909 12.3137 15 9 15C5.68629 15 3 16.7909 3 19M15 13H21M9 12C6.79086 12 5 10.2091 5 8C5 5.79086 6.79086 4 9 4C11.2091 4 13 5.79086 13 8C13 10.2091 11.2091 12 9 12Z"
+            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </svg>
+    </a>
+    {% endif %}
+  </div>
 </div>
 <div class="profile-posts">
   {% if user_to_view.profile.visibility == 'PUBLIC' or friends %}

@@ -7,36 +7,47 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('blog', '0028_alter_comment_date_alter_friend_since_and_more'),
+        ("blog", "0028_alter_comment_date_alter_friend_since_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)),
+            model_name="comment",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)
+            ),
         ),
         migrations.AlterField(
-            model_name='friend',
-            name='since',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)),
+            model_name="friend",
+            name="since",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)
+            ),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)),
+            model_name="notification",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 20, 13, 7, 455226)
+            ),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='user_to_notify',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notification_user_to_notify', to=settings.AUTH_USER_MODEL),
+            model_name="notification",
+            name="user_to_notify",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="notification_user_to_notify",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 31, 20, 13, 7, 454225)),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2023, 5, 31, 20, 13, 7, 454225)
+            ),
         ),
     ]

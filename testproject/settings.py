@@ -47,7 +47,10 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'users.apps.UsersConfig',
-    'django_tables2'
+    'django_tables2',
+    'dal',
+    'dal_select2',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -130,7 +133,7 @@ STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-LOGIN_REDIRECT_URL ='blog-home'
+LOGIN_REDIRECT_URL ='homebase-home'
 LOGIN_URL = 'login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

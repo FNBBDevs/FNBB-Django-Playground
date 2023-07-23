@@ -1,11 +1,12 @@
 {% extends "song/base.html" %}
+{% load humanize %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 {% block content %}
 <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script>
 <div class="view-table">
-    <h1>Listening History Table</h1>
+    <h1>Album Stats Table</h1>
     <hr/>
     <div class="row">
         <div class="col">
@@ -25,7 +26,7 @@
 <script>
     new Autocomplete("#autocomplete", {
         search: (input) => {
-            const url = `/song/stats/autocomplete?type=listen&query=${input}`;
+            const url = `/song/stats/autocomplete?type=album&query=${input}`;
             return new Promise((resolve) => {
                 fetch(url)
                     .then((response) => response.json())

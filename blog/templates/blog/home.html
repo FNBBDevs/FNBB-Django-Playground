@@ -10,7 +10,8 @@
       <div class="home-post">
         <div class="header-group">
           <img class="post-image rounded-circle article-img" src="{{ post.post.author.profile.image.url }}">
-        <span class="home-post-author"><a class="link-dark" href="{% url 'view-user' post.post.author.id %}">{{post.post.author}}</a></span>
+          <span class="home-post-author"><a class="link-dark"
+              href="{% url 'view-user' post.post.author.id %}">{{post.post.author}}</a></span>
         </div>
         <div class="home-post-header">
           <div class="home-post-header-title">
@@ -25,35 +26,17 @@
             {% if post.post.author.username == user.username %}
             <div class="edit">
               <a href="{% url 'post-update' post.post.key %}?next={{ request.path|urlencode }}">
-                <svg
-                  class="edit-svg"
-                  width="18px"
-                  height="18px"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg class="edit-svg" width="18px" height="18px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <title />
-  
+
                   <g id="Complete">
                     <g id="edit">
                       <g>
-                        <path
-                          d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8"
-                          fill="none"
-                          stroke="#000000"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                        />
-  
-                        <polygon
-                          fill="none"
-                          points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8"
-                          stroke="#000000"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                        />
+                        <path d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8" fill="none" stroke="#000000"
+                          stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+
+                        <polygon fill="none" points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" stroke="#000000"
+                          stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                       </g>
                     </g>
                   </g>
@@ -62,21 +45,11 @@
             </div>
             <div class="delete">
               <a href="{% url 'post-delete' post.post.key %}?next={{ request.path|urlencode }}">
-                <svg
-                  class="delete-svg"
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg class="delete-svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </a>
             </div>
@@ -84,73 +57,53 @@
             <div class="view">
               {% if post.post.author.username != user.username %} {% if post.liked %}
               <a href="{% url 'post-like' post.post.key %}?next={{ request.path|urlencode }}">
-                <svg
-                  style="fill: #df2626"
-                  class="home-post-like"
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    opacity="0.1"
+                <svg style="fill: #df2626" class="home-post-like" width="20px" height="20px" viewBox="0 0 24 24"
+                  fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path opacity="0.1"
                     d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
-                    fill="#323232"
-                  />
+                    fill="#323232" />
                   <path
                     d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
-                    stroke="#323232"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
+                    stroke="#323232" stroke-width="2" stroke-linejoin="round" />
                 </svg>
               </a>
               {% else %}
               <a href="{% url 'post-like' post.post.key %}?next={{ request.path|urlencode }}">
-                <svg
-                  class="home-post-like"
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    opacity="0.1"
+                <svg class="home-post-like" width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path opacity="0.1"
                     d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
-                    fill="#323232"
-                  />
+                    fill="#323232" />
                   <path
                     d="M4.8824 12.9557L10.5021 19.3071C11.2981 20.2067 12.7019 20.2067 13.4979 19.3071L19.1176 12.9557C20.7905 11.0649 21.6596 8.6871 20.4027 6.41967C18.9505 3.79992 16.2895 3.26448 13.9771 5.02375C13.182 5.62861 12.5294 6.31934 12.2107 6.67771C12.1 6.80224 11.9 6.80224 11.7893 6.67771C11.4706 6.31934 10.818 5.62861 10.0229 5.02375C7.71053 3.26448 5.04945 3.79992 3.59728 6.41967C2.3404 8.6871 3.20947 11.0649 4.8824 12.9557Z"
-                    stroke="#323232"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
+                    stroke="#323232" stroke-width="2" stroke-linejoin="round" />
                 </svg>
               </a>
               {% endif %} {% endif %}
-                {% if post.post.likes == 1 %}
-                {{ post.post.likes }} like
-                {% else %}
-                {{ post.post.likes }} likes
-                {% endif %}
-                <a href="{% url 'post-view' post.post.key %}"><svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {% if post.post.likes == 1 %}
+              {{ post.post.likes }} like
+              {% else %}
+              {{ post.post.likes }} likes
+              {% endif %}
+              <a href="{% url 'post-view' post.post.key %}"><svg width="19px" height="19px" viewBox="0 0 24 24"
+                  fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_429_11233)">
-                  <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.4876 3.36093 14.891 4 16.1272L3 21L7.8728 20C9.10904 20.6391 10.5124 21 12 21Z" stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path
+                      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.4876 3.36093 14.891 4 16.1272L3 21L7.8728 20C9.10904 20.6391 10.5124 21 12 21Z"
+                      stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                   </g>
                   <defs>
-                  <clipPath id="clip0_429_11233">
-                  <rect width="24" height="24" fill="white"/>
-                  </clipPath>
+                    <clipPath id="clip0_429_11233">
+                      <rect width="24" height="24" fill="white" />
+                    </clipPath>
                   </defs>
-                  </svg>
-                </a>
-                {% if post.post.comments == 1 %}
-                {{ post.post.comments }} comment
-                {% else %}
-                {{ post.post.comments }} comments
-                {% endif %}
+                </svg>
+              </a>
+              {% if post.post.comments == 1 %}
+              {{ post.post.comments }} comment
+              {% else %}
+              {{ post.post.comments }} comments
+              {% endif %}
             </div>
           </div>
         </div>

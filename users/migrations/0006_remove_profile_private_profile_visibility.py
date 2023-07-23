@@ -4,19 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0005_profile_private'),
+        ("users", "0005_profile_private"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='profile',
-            name='private',
+            model_name="profile",
+            name="private",
         ),
         migrations.AddField(
-            model_name='profile',
-            name='visibility',
-            field=models.CharField(choices=[('PUBLIC', 'Public'), ('PRIVATE', 'Private')], default='PRIVATE', max_length=10),
+            model_name="profile",
+            name="visibility",
+            field=models.CharField(
+                choices=[("PUBLIC", "Public"), ("PRIVATE", "Private")],
+                default="PRIVATE",
+                max_length=10,
+            ),
         ),
     ]

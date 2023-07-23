@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0006_remove_profile_private_profile_visibility'),
+        ("users", "0006_remove_profile_private_profile_visibility"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='bio',
-            field=models.TextField(default=''),
+            model_name="profile",
+            name="bio",
+            field=models.TextField(default=""),
         ),
     ]
